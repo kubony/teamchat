@@ -1,13 +1,15 @@
 Directory: .
 Contains:
 - tools
+- logs
 - .git
 - .devcontainer
 - assets
+- config
 - pages
 - .gitignore
 - README.md
-- Home.py
+- main.py
 - streaming.py
 - LICENSE
 - requirements.txt
@@ -38,6 +40,9 @@ Contains:
 - codes.txt
 - tree.txt
 
+Directory: logs
+Contains:
+
 Directory: .devcontainer
 Contains:
 - devcontainer.json
@@ -45,6 +50,11 @@ Contains:
 Directory: assets
 Contains:
 - Chinook.db
+
+Directory: config
+Contains:
+- __init__.py
+- settings.py
 
 Directory: pages
 Contains:

@@ -281,34 +281,46 @@ $ streamlit run Home.py
 ## 💁 Contributing
 Planning to add more chatbot examples over time. PRs are welcome.
 
-File: Home.py
+File: main.py
 import streamlit as st
+from loguru import logger
 
 st.set_page_config(
-    page_title="Langchain Chatbot",
+    page_title="Langchain 챗봇",
     page_icon='💬',
     layout='wide'
 )
 
-st.header("Chatbot Implementations with Langchain")
+logger.info("메인 페이지 로드됨")
+
+st.header("Langchain을 활용한 챗봇 구현")
+
 st.write("""
-[![view source code ](https://img.shields.io/badge/GitHub%20Repository-gray?logo=github)](https://github.com/shashankdeshpande/langchain-chatbot)
-[![linkedin ](https://img.shields.io/badge/Shashank%20Deshpande-blue?logo=linkedin&color=gray)](https://www.linkedin.com/in/shashank-deshpande/)
-![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Flangchain-chatbot.streamlit.app&label=Visitors&labelColor=%235d5d5d&countColor=%231e7ebf&style=flat)
+Langchain은 언어 모델(LLMs)을 사용하는 애플리케이션 개발을 간소화하기 위해 설계된 강력한 프레임워크입니다. 
+다양한 구성 요소를 포괄적으로 통합하여 강력한 애플리케이션을 만드는 과정을 단순화합니다.
+
+Langchain의 능력을 활용하면 챗봇 생성이 쉬워집니다. 다음은 다양한 사용 사례에 맞춘 챗봇 구현의 예시들입니다:
+
+- **기본 챗봇**: LLM과 대화형 상호작용을 할 수 있습니다.
+- **컨텍스트 인식 챗봇**: 이전 대화를 기억하고 그에 따라 응답을 제공하는 챗봇입니다.
+- **인터넷 접근 가능 챗봇**: 최근 사건에 대한 사용자 질문에 답변할 수 있는 인터넷 지원 챗봇입니다.
+- **문서 기반 챗봇**: 사용자 정의 문서에 접근할 수 있는 능력을 갖춘 챗봇으로, 참조된 정보를 바탕으로 사용자 질문에 답변할 수 있습니다.
+- **SQL 데이터베이스 챗봇**: 간단한 대화형 명령을 통해 SQL 데이터베이스와 상호작용할 수 있는 챗봇입니다.
+
+각 챗봇의 사용 예시를 탐색하려면 해당 챗봇 섹션으로 이동하세요.
 """)
-st.write("""
-Langchain is a powerful framework designed to streamline the development of applications using Language Models (LLMs). It provides a comprehensive integration of various components, simplifying the process of assembling them to create robust applications.
 
-Leveraging the power of Langchain, the creation of chatbots becomes effortless. Here are a few examples of chatbot implementations catering to different use cases:
+# 버전 정보 표시
+st.sidebar.text("버전: 1.0.0")
 
-- **Basic Chatbot**: Engage in interactive conversations with the LLM.
-- **Context aware chatbot**: A chatbot that remembers previous conversations and provides responses accordingly.
-- **Chatbot with Internet Access**: An internet-enabled chatbot capable of answering user queries about recent events.
-- **Chat with your documents**: Empower the chatbot with the ability to access custom documents, enabling it to provide answers to user queries based on the referenced information.
-- **Chat with SQL database**: Enable the chatbot to interact with a SQL database through simple, conversational commands.
+# 피드백 섹션
+st.sidebar.text_input("피드백", placeholder="여기에 피드백을 입력하세요")
+if st.sidebar.button("피드백 제출"):
+    # 피드백 처리 로직을 여기에 추가할 수 있습니다.
+    logger.info("사용자가 피드백을 제출함")
+    st.sidebar.success("피드백을 주셔서 감사합니다!")
 
-To explore sample usage of each chatbot, please navigate to the corresponding chatbot section.
-""")
+logger.info("메인 페이지 렌더링 완료")
 
 File: streaming.py
 from langchain_core.callbacks import BaseCallbackHandler
@@ -547,14 +559,22 @@ import os
 import openai
 import streamlit as st
 from datetime import datetime
+from loguru import logger
+from config.settings import settings
 from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama
 
-#decorator
-def enable_chat_history(func):
-    if os.environ.get("OPENAI_API_KEY"):
+def setup_logging():
+    logger.add("logs/app.log", rotation="500 MB", level="INFO")
+    if settings.OPENAI_API_KEY:
+        logger.info(f"OPENAI_API_KEY loaded: {settings.OPENAI_API_KEY.get_secret_value()[:5]}...{settings.OPENAI_API_KEY.get_secret_value()[-5:]}")
+    else:
+        logger.error("OPENAI_API_KEY is not set in the environment variables.")
 
-        # to clear chat history after swtching chatbot
+setup_logging()
+
+def enable_chat_history(func):
+    if settings.OPENAI_API_KEY:
         current_page = func.__qualname__
         if "current_page" not in st.session_state:
             st.session_state["current_page"] = current_page
@@ -563,12 +583,11 @@ def enable_chat_history(func):
                 st.cache_resource.clear()
                 del st.session_state["current_page"]
                 del st.session_state["messages"]
-            except:
+            except KeyError:
                 pass
 
-        # to show chat history on ui
         if "messages" not in st.session_state:
-            st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+            st.session_state["messages"] = [{"role": "assistant", "content": "무엇을 도와드릴까요?"}]
         for msg in st.session_state["messages"]:
             st.chat_message(msg["role"]).write(msg["content"])
 
@@ -577,64 +596,42 @@ def enable_chat_history(func):
     return execute
 
 def display_msg(msg, author):
-    """Method to display message on the UI
-
-    Args:
-        msg (str): message to display
-        author (str): author of the message -user/assistant
-    """
     st.session_state.messages.append({"role": author, "content": msg})
     st.chat_message(author).write(msg)
 
-def choose_custom_openai_key():
-    openai_api_key = st.sidebar.text_input(
-        label="OpenAI API Key",
-        type="password",
-        placeholder="sk-...",
-        key="SELECTED_OPENAI_API_KEY"
-        )
-    if not openai_api_key:
-        st.error("Please add your OpenAI API key to continue.")
-        st.info("Obtain your key from this link: https://platform.openai.com/account/api-keys")
-        st.stop()
-
-    model = "gpt-4o-mini"
+def get_openai_model_list(api_key):
     try:
-        client = openai.OpenAI(api_key=openai_api_key)
-        available_models = [{"id": i.id, "created":datetime.fromtimestamp(i.created)} for i in client.models.list() if str(i.id).startswith("gpt")]
-        available_models = sorted(available_models, key=lambda x: x["created"])
-        available_models = [i["id"] for i in available_models]
-
-        model = st.sidebar.selectbox(
-            label="Model",
-            options=available_models,
-            key="SELECTED_OPENAI_MODEL"
-        )
+        client = openai.OpenAI(api_key=api_key)
+        models = client.models.list()
+        gpt_models = [{"id": m.id, "created": datetime.fromtimestamp(m.created)} for m in models if m.id.startswith("gpt")]
+        return sorted(gpt_models, key=lambda x: x["created"], reverse=True)
     except openai.AuthenticationError as e:
-        st.error(e.body["message"])
+        logger.error(f"OpenAI 인증 오류: {str(e)}")
+        st.error("OpenAI API 키가 유효하지 않습니다.")
         st.stop()
     except Exception as e:
-        print(e)
-        st.error("Something went wrong. Please try again later.")
+        logger.error(f"OpenAI 모델 목록 조회 중 오류 발생: {str(e)}")
+        st.error("모델 목록을 가져오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.")
         st.stop()
-    return model, openai_api_key
 
 def configure_llm():
-    available_llms = ["gpt-4o-mini","llama3:8b","use your openai api key"]
-    llm_opt = st.sidebar.radio(
-        label="LLM",
-        options=available_llms,
-        key="SELECTED_LLM"
-        )
+    available_llms = [settings.DEFAULT_MODEL, "llama3:8b", "OpenAI API 키 사용"]
+    llm_opt = st.sidebar.radio("LLM 선택", options=available_llms, key="SELECTED_LLM")
 
     if llm_opt == "llama3:8b":
-        llm = ChatOllama(model="llama3", base_url=st.secrets["OLLAMA_ENDPOINT"])
-    elif llm_opt == "gpt-4o-mini":
-        llm = ChatOpenAI(model_name=llm_opt, temperature=0, streaming=True, api_key=st.secrets["OPENAI_API_KEY"])
+        return ChatOllama(model="llama3", base_url=settings.OLLAMA_ENDPOINT)
+    elif llm_opt == settings.DEFAULT_MODEL:
+        return ChatOpenAI(model_name=llm_opt, temperature=0, streaming=True, api_key=settings.OPENAI_API_KEY.get_secret_value())
     else:
-        model, openai_api_key = choose_custom_openai_key()
-        llm = ChatOpenAI(model_name=model, temperature=0, streaming=True, api_key=openai_api_key)
-    return llm
+        openai_api_key = st.sidebar.text_input("OpenAI API 키", type="password", placeholder="sk-...", key="CUSTOM_OPENAI_API_KEY")
+        if not openai_api_key:
+            st.error("계속하려면 OpenAI API 키를 입력해주세요.")
+            st.info("API 키는 다음 링크에서 얻을 수 있습니다: https://platform.openai.com/account/api-keys")
+            st.stop()
+
+        available_models = get_openai_model_list(openai_api_key)
+        model = st.sidebar.selectbox("모델 선택", options=[m["id"] for m in available_models], key="SELECTED_OPENAI_MODEL")
+        return ChatOpenAI(model_name=model, temperature=0, streaming=True, api_key=openai_api_key)
 
 def sync_st_session():
     for k, v in st.session_state.items():
@@ -1224,34 +1221,46 @@ $ streamlit run Home.py
 ## 💁 Contributing
 Planning to add more chatbot examples over time. PRs are welcome.
 
-File: Home.py
+File: main.py
 import streamlit as st
+from loguru import logger
 
 st.set_page_config(
-    page_title="Langchain Chatbot",
+    page_title="Langchain 챗봇",
     page_icon='💬',
     layout='wide'
 )
 
-st.header("Chatbot Implementations with Langchain")
+logger.info("메인 페이지 로드됨")
+
+st.header("Langchain을 활용한 챗봇 구현")
+
 st.write("""
-[![view source code ](https://img.shields.io/badge/GitHub%20Repository-gray?logo=github)](https://github.com/shashankdeshpande/langchain-chatbot)
-[![linkedin ](https://img.shields.io/badge/Shashank%20Deshpande-blue?logo=linkedin&color=gray)](https://www.linkedin.com/in/shashank-deshpande/)
-![Visitors](https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Flangchain-chatbot.streamlit.app&label=Visitors&labelColor=%235d5d5d&countColor=%231e7ebf&style=flat)
+Langchain은 언어 모델(LLMs)을 사용하는 애플리케이션 개발을 간소화하기 위해 설계된 강력한 프레임워크입니다. 
+다양한 구성 요소를 포괄적으로 통합하여 강력한 애플리케이션을 만드는 과정을 단순화합니다.
+
+Langchain의 능력을 활용하면 챗봇 생성이 쉬워집니다. 다음은 다양한 사용 사례에 맞춘 챗봇 구현의 예시들입니다:
+
+- **기본 챗봇**: LLM과 대화형 상호작용을 할 수 있습니다.
+- **컨텍스트 인식 챗봇**: 이전 대화를 기억하고 그에 따라 응답을 제공하는 챗봇입니다.
+- **인터넷 접근 가능 챗봇**: 최근 사건에 대한 사용자 질문에 답변할 수 있는 인터넷 지원 챗봇입니다.
+- **문서 기반 챗봇**: 사용자 정의 문서에 접근할 수 있는 능력을 갖춘 챗봇으로, 참조된 정보를 바탕으로 사용자 질문에 답변할 수 있습니다.
+- **SQL 데이터베이스 챗봇**: 간단한 대화형 명령을 통해 SQL 데이터베이스와 상호작용할 수 있는 챗봇입니다.
+
+각 챗봇의 사용 예시를 탐색하려면 해당 챗봇 섹션으로 이동하세요.
 """)
-st.write("""
-Langchain is a powerful framework designed to streamline the development of applications using Language Models (LLMs). It provides a comprehensive integration of various components, simplifying the process of assembling them to create robust applications.
 
-Leveraging the power of Langchain, the creation of chatbots becomes effortless. Here are a few examples of chatbot implementations catering to different use cases:
+# 버전 정보 표시
+st.sidebar.text("버전: 1.0.0")
 
-- **Basic Chatbot**: Engage in interactive conversations with the LLM.
-- **Context aware chatbot**: A chatbot that remembers previous conversations and provides responses accordingly.
-- **Chatbot with Internet Access**: An internet-enabled chatbot capable of answering user queries about recent events.
-- **Chat with your documents**: Empower the chatbot with the ability to access custom documents, enabling it to provide answers to user queries based on the referenced information.
-- **Chat with SQL database**: Enable the chatbot to interact with a SQL database through simple, conversational commands.
+# 피드백 섹션
+st.sidebar.text_input("피드백", placeholder="여기에 피드백을 입력하세요")
+if st.sidebar.button("피드백 제출"):
+    # 피드백 처리 로직을 여기에 추가할 수 있습니다.
+    logger.info("사용자가 피드백을 제출함")
+    st.sidebar.success("피드백을 주셔서 감사합니다!")
 
-To explore sample usage of each chatbot, please navigate to the corresponding chatbot section.
-""")
+logger.info("메인 페이지 렌더링 완료")
 
 File: streaming.py
 from langchain_core.callbacks import BaseCallbackHandler
@@ -1490,14 +1499,22 @@ import os
 import openai
 import streamlit as st
 from datetime import datetime
+from loguru import logger
+from config.settings import settings
 from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama
 
-#decorator
-def enable_chat_history(func):
-    if os.environ.get("OPENAI_API_KEY"):
+def setup_logging():
+    logger.add("logs/app.log", rotation="500 MB", level="INFO")
+    if settings.OPENAI_API_KEY:
+        logger.info(f"OPENAI_API_KEY loaded: {settings.OPENAI_API_KEY.get_secret_value()[:5]}...{settings.OPENAI_API_KEY.get_secret_value()[-5:]}")
+    else:
+        logger.error("OPENAI_API_KEY is not set in the environment variables.")
 
-        # to clear chat history after swtching chatbot
+setup_logging()
+
+def enable_chat_history(func):
+    if settings.OPENAI_API_KEY:
         current_page = func.__qualname__
         if "current_page" not in st.session_state:
             st.session_state["current_page"] = current_page
@@ -1506,12 +1523,11 @@ def enable_chat_history(func):
                 st.cache_resource.clear()
                 del st.session_state["current_page"]
                 del st.session_state["messages"]
-            except:
+            except KeyError:
                 pass
 
-        # to show chat history on ui
         if "messages" not in st.session_state:
-            st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+            st.session_state["messages"] = [{"role": "assistant", "content": "무엇을 도와드릴까요?"}]
         for msg in st.session_state["messages"]:
             st.chat_message(msg["role"]).write(msg["content"])
 
@@ -1520,64 +1536,42 @@ def enable_chat_history(func):
     return execute
 
 def display_msg(msg, author):
-    """Method to display message on the UI
-
-    Args:
-        msg (str): message to display
-        author (str): author of the message -user/assistant
-    """
     st.session_state.messages.append({"role": author, "content": msg})
     st.chat_message(author).write(msg)
 
-def choose_custom_openai_key():
-    openai_api_key = st.sidebar.text_input(
-        label="OpenAI API Key",
-        type="password",
-        placeholder="sk-...",
-        key="SELECTED_OPENAI_API_KEY"
-        )
-    if not openai_api_key:
-        st.error("Please add your OpenAI API key to continue.")
-        st.info("Obtain your key from this link: https://platform.openai.com/account/api-keys")
-        st.stop()
-
-    model = "gpt-4o-mini"
+def get_openai_model_list(api_key):
     try:
-        client = openai.OpenAI(api_key=openai_api_key)
-        available_models = [{"id": i.id, "created":datetime.fromtimestamp(i.created)} for i in client.models.list() if str(i.id).startswith("gpt")]
-        available_models = sorted(available_models, key=lambda x: x["created"])
-        available_models = [i["id"] for i in available_models]
-
-        model = st.sidebar.selectbox(
-            label="Model",
-            options=available_models,
-            key="SELECTED_OPENAI_MODEL"
-        )
+        client = openai.OpenAI(api_key=api_key)
+        models = client.models.list()
+        gpt_models = [{"id": m.id, "created": datetime.fromtimestamp(m.created)} for m in models if m.id.startswith("gpt")]
+        return sorted(gpt_models, key=lambda x: x["created"], reverse=True)
     except openai.AuthenticationError as e:
-        st.error(e.body["message"])
+        logger.error(f"OpenAI 인증 오류: {str(e)}")
+        st.error("OpenAI API 키가 유효하지 않습니다.")
         st.stop()
     except Exception as e:
-        print(e)
-        st.error("Something went wrong. Please try again later.")
+        logger.error(f"OpenAI 모델 목록 조회 중 오류 발생: {str(e)}")
+        st.error("모델 목록을 가져오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.")
         st.stop()
-    return model, openai_api_key
 
 def configure_llm():
-    available_llms = ["gpt-4o-mini","llama3:8b","use your openai api key"]
-    llm_opt = st.sidebar.radio(
-        label="LLM",
-        options=available_llms,
-        key="SELECTED_LLM"
-        )
+    available_llms = [settings.DEFAULT_MODEL, "llama3:8b", "OpenAI API 키 사용"]
+    llm_opt = st.sidebar.radio("LLM 선택", options=available_llms, key="SELECTED_LLM")
 
     if llm_opt == "llama3:8b":
-        llm = ChatOllama(model="llama3", base_url=st.secrets["OLLAMA_ENDPOINT"])
-    elif llm_opt == "gpt-4o-mini":
-        llm = ChatOpenAI(model_name=llm_opt, temperature=0, streaming=True, api_key=st.secrets["OPENAI_API_KEY"])
+        return ChatOllama(model="llama3", base_url=settings.OLLAMA_ENDPOINT)
+    elif llm_opt == settings.DEFAULT_MODEL:
+        return ChatOpenAI(model_name=llm_opt, temperature=0, streaming=True, api_key=settings.OPENAI_API_KEY.get_secret_value())
     else:
-        model, openai_api_key = choose_custom_openai_key()
-        llm = ChatOpenAI(model_name=model, temperature=0, streaming=True, api_key=openai_api_key)
-    return llm
+        openai_api_key = st.sidebar.text_input("OpenAI API 키", type="password", placeholder="sk-...", key="CUSTOM_OPENAI_API_KEY")
+        if not openai_api_key:
+            st.error("계속하려면 OpenAI API 키를 입력해주세요.")
+            st.info("API 키는 다음 링크에서 얻을 수 있습니다: https://platform.openai.com/account/api-keys")
+            st.stop()
+
+        available_models = get_openai_model_list(openai_api_key)
+        model = st.sidebar.selectbox("모델 선택", options=[m["id"] for m in available_models], key="SELECTED_OPENAI_MODEL")
+        return ChatOpenAI(model_name=model, temperature=0, streaming=True, api_key=openai_api_key)
 
 def sync_st_session():
     for k, v in st.session_state.items():
@@ -1739,10 +1733,28 @@ File: .devcontainer/devcontainer.json
 }
 
 File: assets/Chinook.db
+File: config/__init__.py
+
+
+File: config/settings.py
+# config/settings.py
+from pydantic_settings import BaseSettings
+from pydantic import SecretStr
+
+class Settings(BaseSettings):
+    OPENAI_API_KEY: SecretStr
+    OLLAMA_ENDPOINT: str = "http://localhost:11434"
+    DEFAULT_MODEL: str = "gpt-4o-mini"
+    
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+
+settings = Settings()
+
 File: pages/3_🌐_chatbot_with_internet_access.py
 import utils
 import streamlit as st
-
 from langchain import hub
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
@@ -1750,34 +1762,34 @@ from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_core.tools import Tool
+from loguru import logger
+from config.settings import settings
 
-st.set_page_config(page_title="ChatWeb", page_icon="🌐")
-st.header('Chatbot with Internet Access')
-st.write('Equipped with internet access, enables users to ask questions about recent events')
-st.write('[![view source code ](https://img.shields.io/badge/view_source_code-gray?logo=github)](https://github.com/shashankdeshpande/langchain-chatbot/blob/master/pages/3_%F0%9F%8C%90_chatbot_with_internet_access.py)')
+st.set_page_config(page_title="인터넷 챗봇", page_icon="🌐")
+st.header('인터넷 접근이 가능한 챗봇')
+st.write('인터넷 접근 기능을 갖추어 최신 이벤트에 대한 질문에 답변할 수 있습니다.')
 
 class InternetChatbot:
-
     def __init__(self):
         utils.sync_st_session()
         self.llm = utils.configure_llm()
 
-    @st.cache_resource(show_spinner='Connecting..')
+    @st.cache_resource(show_spinner='연결 중..')
     def setup_agent(_self):
-        # Define tool
+        # 도구 정의
         ddg_search = DuckDuckGoSearchRun()
         tools = [
             Tool(
                 name="DuckDuckGoSearch",
                 func=ddg_search.run,
-                description="Useful for when you need to answer questions about current events. You should ask targeted questions",
+                description="현재 사건에 대한 질문에 답할 때 유용합니다. 구체적인 질문을 해야 합니다.",
             )
         ]
 
-        # Get the prompt - can modify this
+        # 프롬프트 가져오기
         prompt = hub.pull("hwchase17/react-chat")
 
-        # Setup LLM and Agent
+        # LLM 및 에이전트 설정
         memory = ConversationBufferMemory(memory_key="chat_history")
         agent = create_react_agent(_self.llm, tools, prompt)
         agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=True)
@@ -1786,20 +1798,36 @@ class InternetChatbot:
     @utils.enable_chat_history
     def main(self):
         agent_executor, memory = self.setup_agent()
-        user_query = st.chat_input(placeholder="Ask me anything!")
+        user_query = st.chat_input(placeholder="무엇이든 물어보세요!")
         if user_query:
             utils.display_msg(user_query, 'user')
             with st.chat_message("assistant"):
                 st_cb = StreamlitCallbackHandler(st.container())
-                result = agent_executor.invoke(
-                    {"input": user_query, "chat_history": memory.chat_memory.messages},
-                    {"callbacks": [st_cb]}
-                )
-                response = result["output"]
-                st.session_state.messages.append({"role": "assistant", "content": response})
-                st.write(response)
+                try:
+                    result = agent_executor.invoke(
+                        {"input": user_query, "chat_history": memory.chat_memory.messages},
+                        {"callbacks": [st_cb]}
+                    )
+                    response = result["output"]
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+                    st.write(response)
+                    
+                    # 검색 결과 출처 표시 (있는 경우)
+                    if "source" in result:
+                        st.info(f"정보 출처: {result['source']}")
+                    
+                    logger.info(f"사용자 질문: {user_query}")
+                    logger.info(f"챗봇 응답: {response}")
+                except Exception as e:
+                    error_msg = f"응답 생성 중 오류 발생: {str(e)}"
+                    st.error(error_msg)
+                    logger.error(error_msg)
 
 if __name__ == "__main__":
+    st.sidebar.title("설정")
+    search_engine = st.sidebar.selectbox("검색 엔진", ["DuckDuckGo", "Google", "Bing"])
+    max_search_results = st.sidebar.slider("최대 검색 결과 수", 1, 10, 3)
+    
     obj = InternetChatbot()
     obj.main()
 
@@ -1808,7 +1836,6 @@ import os
 import utils
 import streamlit as st
 from streaming import StreamHandler
-
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
@@ -1816,14 +1843,14 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import DocArrayInMemorySearch
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from loguru import logger
+from config.settings import settings
 
-st.set_page_config(page_title="ChatPDF", page_icon="📄")
-st.header('Chat with your documents (Basic RAG)')
-st.write('Has access to custom documents and can respond to user queries by referring to the content within those documents')
-st.write('[![view source code ](https://img.shields.io/badge/view_source_code-gray?logo=github)](https://github.com/shashankdeshpande/langchain-chatbot/blob/master/pages/4_%F0%9F%93%84_chat_with_your_documents.py)')
+st.set_page_config(page_title="문서 챗봇", page_icon="📄")
+st.header('문서 기반 챗봇 (기본 RAG)')
+st.write('사용자 정의 문서에 접근하여 문서 내용을 참조해 사용자 질문에 답변할 수 있습니다.')
 
 class CustomDataChatbot:
-
     def __init__(self):
         utils.sync_st_session()
         self.llm = utils.configure_llm()
@@ -1838,81 +1865,96 @@ class CustomDataChatbot:
             f.write(file.getvalue())
         return file_path
 
-    @st.spinner('Analyzing documents..')
+    @st.spinner('문서 분석 중..')
     def setup_qa_chain(self, uploaded_files):
-        # Load documents
-        docs = []
-        for file in uploaded_files:
-            file_path = self.save_file(file)
-            loader = PyPDFLoader(file_path)
-            docs.extend(loader.load())
-        
-        # Split documents
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200
-        )
-        splits = text_splitter.split_documents(docs)
+        try:
+            # 문서 로드
+            docs = []
+            for file in uploaded_files:
+                file_path = self.save_file(file)
+                loader = PyPDFLoader(file_path)
+                docs.extend(loader.load())
+                os.remove(file_path)  # 임시 파일 삭제
+            
+            # 문서 분할
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1000,
+                chunk_overlap=200
+            )
+            splits = text_splitter.split_documents(docs)
 
-        # Create embeddings and store in vectordb
-        embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
-        vectordb = DocArrayInMemorySearch.from_documents(splits, embeddings)
+            # 임베딩 생성 및 벡터 DB 저장
+            embeddings = HuggingFaceEmbeddings(model_name="BAAI/bge-small-en-v1.5")
+            vectordb = DocArrayInMemorySearch.from_documents(splits, embeddings)
 
-        # Define retriever
-        retriever = vectordb.as_retriever(
-            search_type='mmr',
-            search_kwargs={'k':2, 'fetch_k':4}
-        )
+            # 검색기 정의
+            retriever = vectordb.as_retriever(
+                search_type='mmr',
+                search_kwargs={'k': self.k, 'fetch_k': self.fetch_k}
+            )
 
-        # Setup memory for contextual conversation        
-        memory = ConversationBufferMemory(
-            memory_key='chat_history',
-            output_key='answer',
-            return_messages=True
-        )
+            # 컨텍스트 대화를 위한 메모리 설정        
+            memory = ConversationBufferMemory(
+                memory_key='chat_history',
+                output_key='answer',
+                return_messages=True
+            )
 
-        # Setup LLM and QA chain
-        qa_chain = ConversationalRetrievalChain.from_llm(
-            llm=self.llm,
-            retriever=retriever,
-            memory=memory,
-            return_source_documents=True,
-            verbose=True
-        )
-        return qa_chain
+            # LLM 및 QA 체인 설정
+            qa_chain = ConversationalRetrievalChain.from_llm(
+                llm=self.llm,
+                retriever=retriever,
+                memory=memory,
+                return_source_documents=True,
+                verbose=True
+            )
+            return qa_chain
+        except Exception as e:
+            logger.error(f"QA 체인 설정 중 오류 발생: {str(e)}")
+            raise
 
     @utils.enable_chat_history
     def main(self):
-
-        # User Inputs
-        uploaded_files = st.sidebar.file_uploader(label='Upload PDF files', type=['pdf'], accept_multiple_files=True)
+        # 사용자 입력
+        uploaded_files = st.sidebar.file_uploader(label='PDF 파일 업로드', type=['pdf'], accept_multiple_files=True)
         if not uploaded_files:
-            st.error("Please upload PDF documents to continue!")
+            st.error("계속하려면 PDF 문서를 업로드해주세요!")
             st.stop()
 
-        user_query = st.chat_input(placeholder="Ask me anything!")
+        # 사용자 설정
+        self.k = st.sidebar.slider("검색할 문서 수", 1, 5, 2)
+        self.fetch_k = st.sidebar.slider("후보 문서 수", 1, 10, 4)
+
+        user_query = st.chat_input(placeholder="무엇이든 물어보세요!")
 
         if uploaded_files and user_query:
-            qa_chain = self.setup_qa_chain(uploaded_files)
+            try:
+                qa_chain = self.setup_qa_chain(uploaded_files)
+                utils.display_msg(user_query, 'user')
 
-            utils.display_msg(user_query, 'user')
+                with st.chat_message("assistant"):
+                    st_cb = StreamHandler(st.empty())
+                    result = qa_chain.invoke(
+                        {"question": user_query},
+                        {"callbacks": [st_cb]}
+                    )
+                    response = result["answer"]
+                    st.session_state.messages.append({"role": "assistant", "content": response})
 
-            with st.chat_message("assistant"):
-                st_cb = StreamHandler(st.empty())
-                result = qa_chain.invoke(
-                    {"question":user_query},
-                    {"callbacks": [st_cb]}
-                )
-                response = result["answer"]
-                st.session_state.messages.append({"role": "assistant", "content": response})
+                    # 참조 표시
+                    for idx, doc in enumerate(result['source_documents'], 1):
+                        filename = os.path.basename(doc.metadata['source'])
+                        page_num = doc.metadata['page']
+                        ref_title = f":blue[참조 {idx}: *{filename} - 페이지 {page_num}*]"
+                        with st.popover(ref_title):
+                            st.caption(doc.page_content)
 
-                # to show references
-                for idx, doc in enumerate(result['source_documents'],1):
-                    filename = os.path.basename(doc.metadata['source'])
-                    page_num = doc.metadata['page']
-                    ref_title = f":blue[Reference {idx}: *{filename} - page.{page_num}*]"
-                    with st.popover(ref_title):
-                        st.caption(doc.page_content)
+                logger.info(f"사용자 질문: {user_query}")
+                logger.info(f"챗봇 응답: {response}")
+            except Exception as e:
+                error_msg = f"응답 생성 중 오류 발생: {str(e)}"
+                st.error(error_msg)
+                logger.error(error_msg)
 
 if __name__ == "__main__":
     obj = CustomDataChatbot()
@@ -1924,76 +1966,85 @@ import sqlite3
 import streamlit as st
 from pathlib import Path
 from sqlalchemy import create_engine
+from loguru import logger
+from config.settings import settings
 
 from langchain_openai import ChatOpenAI
 from langchain_community.agent_toolkits import create_sql_agent
 from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain_community.utilities.sql_database import SQLDatabase
 
-st.set_page_config(page_title="ChatSQL", page_icon="🛢")
-st.header('Chat with SQL database')
-st.write('Enable the chatbot to interact with a SQL database through simple, conversational commands.')
-st.write('[![view source code ](https://img.shields.io/badge/view_source_code-gray?logo=github)](https://github.com/shashankdeshpande/langchain-chatbot/blob/master/pages/5_%F0%9F%9B%A2_chat_with_sql_db.py)')
+st.set_page_config(page_title="SQL 챗봇", page_icon="🛢")
+st.header('SQL 데이터베이스와 대화하기')
+st.write('간단한 대화형 명령을 통해 SQL 데이터베이스와 상호작용할 수 있는 챗봇입니다.')
 
 class SqlChatbot:
-
     def __init__(self):
         utils.sync_st_session()
         self.llm = utils.configure_llm()
     
-    def setup_db(_self, db_uri):
-        if db_uri == 'USE_SAMPLE_DB':
-            db_filepath = (Path(__file__).parent.parent / "assets/Chinook.db").absolute()
-            db_uri = f"sqlite:////{db_filepath}"
-            creator = lambda: sqlite3.connect(f"file:{db_filepath}?mode=ro", uri=True)
-            db = SQLDatabase(create_engine("sqlite:///", creator=creator))
-        else:
-            db = SQLDatabase.from_uri(database_uri=db_uri)
-        
-        with st.sidebar.expander('Database tables', expanded=True):
-            st.info('\n- '+'\n- '.join(db.get_usable_table_names()))
-        return db
+    def setup_db(self, db_uri):
+        try:
+            if db_uri == 'USE_SAMPLE_DB':
+                db_filepath = (Path(__file__).parent.parent / "assets/Chinook.db").absolute()
+                db_uri = f"sqlite:////{db_filepath}"
+                creator = lambda: sqlite3.connect(f"file:{db_filepath}?mode=ro", uri=True)
+                db = SQLDatabase(create_engine("sqlite:///", creator=creator))
+            else:
+                db = SQLDatabase.from_uri(database_uri=db_uri)
+            
+            with st.sidebar.expander('데이터베이스 테이블', expanded=True):
+                st.info('\n- '+'\n- '.join(db.get_usable_table_names()))
+            return db
+        except Exception as e:
+            logger.error(f"데이터베이스 설정 중 오류 발생: {str(e)}")
+            st.error(f"데이터베이스 연결 중 오류가 발생했습니다: {str(e)}")
+            st.stop()
     
-    def setup_sql_agent(_self, db):
-        agent = create_sql_agent(
-            llm=_self.llm,
-            db=db,
-            top_k=10,
-            verbose=True,
-            agent_type="openai-tools",
-            handle_parsing_errors=True,
-            handle_sql_errors=True
-        )
-        return agent
+    def setup_sql_agent(self, db):
+        try:
+            agent = create_sql_agent(
+                llm=self.llm,
+                db=db,
+                top_k=10,
+                verbose=True,
+                agent_type="openai-tools",
+                handle_parsing_errors=True,
+                handle_sql_errors=True
+            )
+            return agent
+        except Exception as e:
+            logger.error(f"SQL 에이전트 설정 중 오류 발생: {str(e)}")
+            st.error(f"SQL 에이전트 설정 중 오류가 발생했습니다: {str(e)}")
+            st.stop()
 
     @utils.enable_chat_history
     def main(self):
-
-        # User inputs
-        radio_opt = ['Use sample db - Chinook.db','Connect to your SQL db']
+        # 사용자 입력
+        radio_opt = ['샘플 DB 사용 - Chinook.db', '사용자 SQL DB 연결']
         selected_opt = st.sidebar.radio(
-            label='Choose suitable option',
+            label='옵션 선택',
             options=radio_opt
         )
         if radio_opt.index(selected_opt) == 1:
-            with st.sidebar.popover(':orange[⚠️ Security note]', use_container_width=True):
-                warning = "Building Q&A systems of SQL databases requires executing model-generated SQL queries. There are inherent risks in doing this. Make sure that your database connection permissions are always scoped as narrowly as possible for your chain/agent's needs.\n\nFor more on general security best practices - [read this](https://python.langchain.com/docs/security)."
+            with st.sidebar.popover(':orange[⚠️ 보안 주의사항]', use_container_width=True):
+                warning = "SQL 데이터베이스의 Q&A 시스템을 구축하려면 모델이 생성한 SQL 쿼리를 실행해야 합니다. 이 과정에는 고유한 위험이 있습니다. 데이터베이스 연결 권한이 체인/에이전트의 필요에 맞게 항상 최소한으로 제한되어 있는지 확인하세요.\n\n일반적인 보안 모범 사례에 대한 자세한 내용은 [여기](https://python.langchain.com/docs/security)를 참조하세요."
                 st.warning(warning)
             db_uri = st.sidebar.text_input(
-                label='Database URI',
+                label='데이터베이스 URI',
                 placeholder='mysql://user:pass@hostname:port/db'
             )
         else:
             db_uri = 'USE_SAMPLE_DB'
         
         if not db_uri:
-            st.error("Please enter database URI to continue!")
+            st.error("계속하려면 데이터베이스 URI를 입력하세요!")
             st.stop()
         
         db = self.setup_db(db_uri)
         agent = self.setup_sql_agent(db)
 
-        user_query = st.chat_input(placeholder="Ask me anything!")
+        user_query = st.chat_input(placeholder="무엇이든 물어보세요!")
 
         if user_query:
             st.session_state.messages.append({"role": "user", "content": user_query})
@@ -2001,13 +2052,20 @@ class SqlChatbot:
 
             with st.chat_message("assistant"):
                 st_cb = StreamlitCallbackHandler(st.container())
-                result = agent.invoke(
-                    {"input": user_query},
-                    {"callbacks": [st_cb]}
-                )
-                response = result["output"]
-                st.session_state.messages.append({"role": "assistant", "content": response})
-                st.write(response)
+                try:
+                    result = agent.invoke(
+                        {"input": user_query},
+                        {"callbacks": [st_cb]}
+                    )
+                    response = result["output"]
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+                    st.write(response)
+                    logger.info(f"사용자 질문: {user_query}")
+                    logger.info(f"챗봇 응답: {response}")
+                except Exception as e:
+                    error_msg = f"응답 생성 중 오류 발생: {str(e)}"
+                    st.error(error_msg)
+                    logger.error(error_msg)
 
 if __name__ == "__main__":
     obj = SqlChatbot()
@@ -2017,61 +2075,70 @@ File: pages/2_⭐_context_aware_chatbot.py
 import utils
 import streamlit as st
 from streaming import StreamHandler
-
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
+from loguru import logger
+from config.settings import settings
 
-st.set_page_config(page_title="Context aware chatbot", page_icon="⭐")
-st.header('Context aware chatbot')
-st.write('Enhancing Chatbot Interactions through Context Awareness')
-st.write('[![view source code ](https://img.shields.io/badge/view_source_code-gray?logo=github)](https://github.com/shashankdeshpande/langchain-chatbot/blob/master/pages/2_%E2%AD%90_context_aware_chatbot.py)')
+st.set_page_config(page_title="컨텍스트 인식 챗봇", page_icon="⭐")
+st.header('컨텍스트 인식 챗봇')
+st.write('컨텍스트 인식을 통한 챗봇 상호작용 향상')
 
 class ContextChatbot:
-
     def __init__(self):
         utils.sync_st_session()
         self.llm = utils.configure_llm()
     
     @st.cache_resource
-    def setup_chain(_self):
-        memory = ConversationBufferMemory()
+    def setup_chain(_self, max_tokens=1000):
+        memory = ConversationBufferMemory(max_token_limit=max_tokens)
         chain = ConversationChain(llm=_self.llm, memory=memory, verbose=True)
         return chain
     
     @utils.enable_chat_history
     def main(self):
-        chain = self.setup_chain()
-        user_query = st.chat_input(placeholder="Ask me anything!")
+        max_tokens = st.sidebar.slider("메모리 크기 (토큰)", 100, 2000, 1000)
+        chain = self.setup_chain(max_tokens)
+        user_query = st.chat_input(placeholder="무엇이든 물어보세요!")
         if user_query:
             utils.display_msg(user_query, 'user')
             with st.chat_message("assistant"):
                 st_cb = StreamHandler(st.empty())
-                result = chain.invoke(
-                    {"input":user_query},
-                    {"callbacks": [st_cb]}
-                )
-                response = result["response"]
-                st.session_state.messages.append({"role": "assistant", "content": response})
+                try:
+                    result = chain.invoke(
+                        {"input": user_query},
+                        {"callbacks": [st_cb]}
+                    )
+                    response = result["response"]
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+                    logger.info(f"사용자 질문: {user_query}")
+                    logger.info(f"챗봇 응답: {response}")
+                except Exception as e:
+                    error_msg = f"응답 생성 중 오류 발생: {str(e)}"
+                    st.error(error_msg)
+                    logger.error(error_msg)
 
 if __name__ == "__main__":
+    st.sidebar.title("설정")
+    model = st.sidebar.selectbox("LLM 모델 선택", [settings.DEFAULT_MODEL, "다른모델1", "다른모델2"])
+    temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
+    
     obj = ContextChatbot()
     obj.main()
-
 
 File: pages/1_💬_basic_chatbot.py
 import utils
 import streamlit as st
 from streaming import StreamHandler
-
 from langchain.chains import ConversationChain
+from loguru import logger
+from config.settings import settings
 
-st.set_page_config(page_title="Chatbot", page_icon="💬")
-st.header('Basic Chatbot')
-st.write('Allows users to interact with the LLM')
-st.write('[![view source code ](https://img.shields.io/badge/view_source_code-gray?logo=github)](https://github.com/shashankdeshpande/langchain-chatbot/blob/master/pages/1_%F0%9F%92%AC_basic_chatbot.py)')
+st.set_page_config(page_title="챗봇", page_icon="💬")
+st.header('기본 챗봇')
+st.write('LLM과 상호작용할 수 있는 기본 챗봇입니다.')
 
 class BasicChatbot:
-
     def __init__(self):
         utils.sync_st_session()
         self.llm = utils.configure_llm()
@@ -2083,19 +2150,30 @@ class BasicChatbot:
     @utils.enable_chat_history
     def main(self):
         chain = self.setup_chain()
-        user_query = st.chat_input(placeholder="Ask me anything!")
+        user_query = st.chat_input(placeholder="무엇이든 물어보세요!")
         if user_query:
             utils.display_msg(user_query, 'user')
             with st.chat_message("assistant"):
                 st_cb = StreamHandler(st.empty())
-                result = chain.invoke(
-                    {"input":user_query},
-                    {"callbacks": [st_cb]}
-                )
-                response = result["response"]
-                st.session_state.messages.append({"role": "assistant", "content": response})
+                try:
+                    result = chain.invoke(
+                        {"input": user_query},
+                        {"callbacks": [st_cb]}
+                    )
+                    response = result["response"]
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+                    logger.info(f"사용자 질문: {user_query}")
+                    logger.info(f"챗봇 응답: {response}")
+                except Exception as e:
+                    error_msg = f"응답 생성 중 오류 발생: {str(e)}"
+                    st.error(error_msg)
+                    logger.error(error_msg)
 
 if __name__ == "__main__":
+    st.sidebar.title("설정")
+    model = st.sidebar.selectbox("LLM 모델 선택", [settings.DEFAULT_MODEL, "다른모델1", "다른모델2"])
+    temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
+    
     obj = BasicChatbot()
     obj.main()
 

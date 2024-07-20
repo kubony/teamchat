@@ -1,7 +1,8 @@
 Including file: .gitignore
 Including file: README.md
-Including file: Home.py
+Including file: main.py
 Including file: streaming.py
+Excluded by pattern: .env
 Including file: LICENSE
 Including file: requirements.txt
 Including file: utils.py
@@ -11,8 +12,11 @@ Including file: tools/scripts/db_scanner.py
 Including file: tools/data/scanned_project_files/log.txt
 Including file: tools/data/scanned_project_files/codes.txt
 Including file: tools/data/scanned_project_files/tree.txt
+Excluded by pattern: logs/app.log
 Including file: .devcontainer/devcontainer.json
 Could not read file (encoding issue) /home/inkeun/projects/langchain-chatbot/assets/Chinook.db: 'utf-8' codec can't decode byte 0xdf in position 31: invalid continuation byte
+Including file: config/__init__.py
+Including file: config/settings.py
 Including file: pages/3_🌐_chatbot_with_internet_access.py
 Including file: pages/4_📄_chat_with_your_documents.py
 Including file: pages/5_🛢_chat_with_sql_db.py

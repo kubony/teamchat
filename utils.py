@@ -2,14 +2,22 @@ import os
 import openai
 import streamlit as st
 from datetime import datetime
+from loguru import logger
+from config.settings import settings
 from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama
 
-#decorator
-def enable_chat_history(func):
-    if os.environ.get("OPENAI_API_KEY"):
+def setup_logging():
+    logger.add("logs/app.log", rotation="500 MB", level="INFO")
+    if settings.OPENAI_API_KEY:
+        logger.info(f"OPENAI_API_KEY loaded: {settings.OPENAI_API_KEY.get_secret_value()[:5]}...{settings.OPENAI_API_KEY.get_secret_value()[-5:]}")
+    else:
+        logger.error("OPENAI_API_KEY is not set in the environment variables.")
 
-        # to clear chat history after swtching chatbot
+setup_logging()
+
+def enable_chat_history(func):
+    if settings.OPENAI_API_KEY:
         current_page = func.__qualname__
         if "current_page" not in st.session_state:
             st.session_state["current_page"] = current_page
@@ -18,12 +26,11 @@ def enable_chat_history(func):
                 st.cache_resource.clear()
                 del st.session_state["current_page"]
                 del st.session_state["messages"]
-            except:
+            except KeyError:
                 pass
 
-        # to show chat history on ui
         if "messages" not in st.session_state:
-            st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+            st.session_state["messages"] = [{"role": "assistant", "content": "무엇을 도와드릴까요?"}]
         for msg in st.session_state["messages"]:
             st.chat_message(msg["role"]).write(msg["content"])
 
@@ -32,64 +39,42 @@ def enable_chat_history(func):
     return execute
 
 def display_msg(msg, author):
-    """Method to display message on the UI
-
-    Args:
-        msg (str): message to display
-        author (str): author of the message -user/assistant
-    """
     st.session_state.messages.append({"role": author, "content": msg})
     st.chat_message(author).write(msg)
 
-def choose_custom_openai_key():
-    openai_api_key = st.sidebar.text_input(
-        label="OpenAI API Key",
-        type="password",
-        placeholder="sk-...",
-        key="SELECTED_OPENAI_API_KEY"
-        )
-    if not openai_api_key:
-        st.error("Please add your OpenAI API key to continue.")
-        st.info("Obtain your key from this link: https://platform.openai.com/account/api-keys")
-        st.stop()
-
-    model = "gpt-4o-mini"
+def get_openai_model_list(api_key):
     try:
-        client = openai.OpenAI(api_key=openai_api_key)
-        available_models = [{"id": i.id, "created":datetime.fromtimestamp(i.created)} for i in client.models.list() if str(i.id).startswith("gpt")]
-        available_models = sorted(available_models, key=lambda x: x["created"])
-        available_models = [i["id"] for i in available_models]
-
-        model = st.sidebar.selectbox(
-            label="Model",
-            options=available_models,
-            key="SELECTED_OPENAI_MODEL"
-        )
+        client = openai.OpenAI(api_key=api_key)
+        models = client.models.list()
+        gpt_models = [{"id": m.id, "created": datetime.fromtimestamp(m.created)} for m in models if m.id.startswith("gpt")]
+        return sorted(gpt_models, key=lambda x: x["created"], reverse=True)
     except openai.AuthenticationError as e:
-        st.error(e.body["message"])
+        logger.error(f"OpenAI 인증 오류: {str(e)}")
+        st.error("OpenAI API 키가 유효하지 않습니다.")
         st.stop()
     except Exception as e:
-        print(e)
-        st.error("Something went wrong. Please try again later.")
+        logger.error(f"OpenAI 모델 목록 조회 중 오류 발생: {str(e)}")
+        st.error("모델 목록을 가져오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.")
         st.stop()
-    return model, openai_api_key
 
 def configure_llm():
-    available_llms = ["gpt-4o-mini","llama3:8b","use your openai api key"]
-    llm_opt = st.sidebar.radio(
-        label="LLM",
-        options=available_llms,
-        key="SELECTED_LLM"
-        )
+    available_llms = [settings.DEFAULT_MODEL, "llama3:8b", "OpenAI API 키 사용"]
+    llm_opt = st.sidebar.radio("LLM 선택", options=available_llms, key="SELECTED_LLM")
 
     if llm_opt == "llama3:8b":
-        llm = ChatOllama(model="llama3", base_url=st.secrets["OLLAMA_ENDPOINT"])
-    elif llm_opt == "gpt-4o-mini":
-        llm = ChatOpenAI(model_name=llm_opt, temperature=0, streaming=True, api_key=st.secrets["OPENAI_API_KEY"])
+        return ChatOllama(model="llama3", base_url=settings.OLLAMA_ENDPOINT)
+    elif llm_opt == settings.DEFAULT_MODEL:
+        return ChatOpenAI(model_name=llm_opt, temperature=0, streaming=True, api_key=settings.OPENAI_API_KEY.get_secret_value())
     else:
-        model, openai_api_key = choose_custom_openai_key()
-        llm = ChatOpenAI(model_name=model, temperature=0, streaming=True, api_key=openai_api_key)
-    return llm
+        openai_api_key = st.sidebar.text_input("OpenAI API 키", type="password", placeholder="sk-...", key="CUSTOM_OPENAI_API_KEY")
+        if not openai_api_key:
+            st.error("계속하려면 OpenAI API 키를 입력해주세요.")
+            st.info("API 키는 다음 링크에서 얻을 수 있습니다: https://platform.openai.com/account/api-keys")
+            st.stop()
+
+        available_models = get_openai_model_list(openai_api_key)
+        model = st.sidebar.selectbox("모델 선택", options=[m["id"] for m in available_models], key="SELECTED_OPENAI_MODEL")
+        return ChatOpenAI(model_name=model, temperature=0, streaming=True, api_key=openai_api_key)
 
 def sync_st_session():
     for k, v in st.session_state.items():
