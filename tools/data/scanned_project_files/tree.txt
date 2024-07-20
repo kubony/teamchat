@@ -1,0 +1,56 @@
+Directory: .
+Contains:
+- tools
+- .git
+- .devcontainer
+- assets
+- pages
+- .gitignore
+- README.md
+- Home.py
+- streaming.py
+- LICENSE
+- requirements.txt
+- utils.py
+
+Directory: tools
+Contains:
+- scripts
+- data
+
+Directory: tools/scripts
+Contains:
+- project_file_scanner.py
+- codes_by_folders.py
+- db_scanner.py
+
+Directory: tools/data
+Contains:
+- input
+- scanned_project_files
+
+Directory: tools/data/input
+Contains:
+
+Directory: tools/data/scanned_project_files
+Contains:
+- log.txt
+- codes.txt
+- tree.txt
+
+Directory: .devcontainer
+Contains:
+- devcontainer.json
+
+Directory: assets
+Contains:
+- Chinook.db
+
+Directory: pages
+Contains:
+- 3_🌐_chatbot_with_internet_access.py
+- 4_📄_chat_with_your_documents.py
+- 5_🛢_chat_with_sql_db.py
+- 2_⭐_context_aware_chatbot.py
+- 1_💬_basic_chatbot.py
+
