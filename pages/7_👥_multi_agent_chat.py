@@ -40,19 +40,26 @@ class MultiAgentChat:
         return context
     
     def setup_chain(self):
-        memory = ConversationBufferMemory()
+        memory = ConversationBufferMemory(max_token_limit=1000)
         chain = ConversationChain(llm=self.llm, memory=memory, verbose=True)
         return chain
     
     def setup_moderator(self):
         moderator_context = "당신은 대화를 분석하고 다음 발언자를 선택하는 사회자입니다."
-        memory = ConversationBufferMemory()
+        memory = ConversationBufferMemory(max_token_limit=1000)
         return ConversationChain(llm=self.llm, memory=memory, verbose=True)
     
     def get_next_speaker(self, conversation_history):
-        moderator_input = f"대화 내용: {conversation_history}\n\n다음 발언자를 선택하세요."
+        moderator_input = f"대화 내용: {conversation_history}\n\n다음 발언자를 'agent1', 'agent2', 또는 'agent3' 중에서 선택하세요. 선택한 에이전트의 이름만 답변으로 제시하세요."
         response = self.moderator.invoke({"input": moderator_input})
-        return response['response'].strip()
+        next_speaker = response['response'].strip().lower()
+        
+        # 유효한 에이전트 이름인지 확인
+        if next_speaker not in ['agent1', 'agent2', 'agent3']:
+            logger.warning(f"Invalid speaker selected: {next_speaker}. Defaulting to agent1.")
+            return 'agent1'
+        
+        return next_speaker
     
     def log_conversation(self, message):
         with open('conversation_log.txt', 'a', encoding='utf-8') as f:
@@ -65,12 +72,14 @@ class MultiAgentChat:
         if user_query:
             utils.display_msg(user_query, 'user')
             self.baton = 3
+            logger.info(f"대화 시작: 바톤 카운트 {self.baton}")
             self.log_conversation(f"User: {user_query}")
             
             conversation_history = "\n".join([f"{msg['role']}: {msg['content']}" for msg in st.session_state.messages])
-            next_speaker = self.get_next_speaker(conversation_history)
             
             while self.baton > 0:
+                next_speaker = self.get_next_speaker(conversation_history)
+                
                 with st.chat_message("assistant"):
                     st_cb = StreamHandler(st.empty())
                     try:
@@ -86,14 +95,17 @@ class MultiAgentChat:
                         logger.info(f"{next_speaker} 응답: {response}")
                         
                         self.baton -= 1
+                        logger.info(f"바톤 카운트 감소: {self.baton}")
                         conversation_history += f"\n{next_speaker}: {response}"
-                        next_speaker = self.get_next_speaker(conversation_history)
                     
                     except Exception as e:
                         error_msg = f"응답 생성 중 오류 발생: {str(e)}"
                         st.error(error_msg)
-                        logger.error(error_msg)
+                        logger.error(f"상세 오류 정보: {type(e).__name__}, {str(e)}")
+                        logger.exception("스택 트레이스:")
                         break
+            
+            logger.info(f"대화 종료: 바톤 카운트 {self.baton}")
 
 if __name__ == "__main__":
     obj = MultiAgentChat()
