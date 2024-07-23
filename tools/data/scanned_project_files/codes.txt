@@ -540,18 +540,117 @@ File: LICENSE
 
 
 File: requirements.txt
+aiohttp==3.9.5
+aiosignal==1.3.1
+altair==5.3.0
+annotated-types==0.7.0
+anyio==4.4.0
+attrs==23.2.0
+blinker==1.8.2
+cachetools==5.4.0
+certifi==2024.7.4
+charset-normalizer==3.3.2
+click==8.1.7
+dataclasses-json==0.6.7
+distro==1.9.0
+docarray==0.40.0
+duckduckgo_search==6.2.1
+filelock==3.15.4
+frozenlist==1.4.1
+fsspec==2024.6.1
+gitdb==4.0.11
+GitPython==3.1.43
+greenlet==3.0.3
+h11==0.14.0
+httpcore==1.0.5
+httpx==0.27.0
+huggingface-hub==0.24.0
+idna==3.7
+Jinja2==3.1.4
+joblib==1.4.2
+jsonpatch==1.33
+jsonpointer==3.0.0
+jsonschema==4.23.0
+jsonschema-specifications==2023.12.1
 langchain==0.2.9
-langchain_community==0.2.7
-langchain_core==0.2.21
-langchain_openai==0.1.17
-langchain_text_splitters==0.2.2
+langchain-community==0.2.7
+langchain-core==0.2.21
+langchain-openai==0.1.17
+langchain-text-splitters==0.2.2
+langchainhub==0.1.20
+langsmith==0.1.92
+loguru==0.7.2
+markdown-it-py==3.0.0
+MarkupSafe==2.1.5
+marshmallow==3.21.3
+mdurl==0.1.2
+mpmath==1.3.0
+multidict==6.0.5
+mypy-extensions==1.0.0
+networkx==3.3
+numpy==1.26.4
+nvidia-cublas-cu12==12.1.3.1
+nvidia-cuda-cupti-cu12==12.1.105
+nvidia-cuda-nvrtc-cu12==12.1.105
+nvidia-cuda-runtime-cu12==12.1.105
+nvidia-cudnn-cu12==8.9.2.26
+nvidia-cufft-cu12==11.0.2.54
+nvidia-curand-cu12==10.3.2.106
+nvidia-cusolver-cu12==11.4.5.107
+nvidia-cusparse-cu12==12.1.0.106
+nvidia-nccl-cu12==2.20.5
+nvidia-nvjitlink-cu12==12.5.82
+nvidia-nvtx-cu12==12.1.105
 openai==1.35.15
+orjson==3.10.6
+packaging==24.1
+pandas==2.2.2
+pillow==10.4.0
+protobuf==5.27.2
+pyarrow==17.0.0
+pydantic==2.8.2
+pydantic-settings==2.3.4
+pydantic_core==2.20.1
+pydeck==0.9.1
+Pygments==2.18.0
+pypdf==4.3.0
+pyreqwest_impersonate==0.5.0
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+pytz==2024.1
+PyYAML==6.0.1
+referencing==0.35.1
+regex==2024.5.15
+requests==2.32.3
+rich==13.7.1
+rpds-py==0.19.0
+safetensors==0.4.3
+scikit-learn==1.5.1
+scipy==1.14.0
+sentence-transformers==3.0.1
+six==1.16.0
+smmap==5.0.1
+sniffio==1.3.1
 SQLAlchemy==2.0.31
 streamlit==1.36.0
-duckduckgo-search==6.2.1
-pypdf==4.3.0
-sentence-transformers==3.0.1
-docarray==0.40.0
+sympy==1.13.1
+tenacity==8.5.0
+threadpoolctl==3.5.0
+tiktoken==0.7.0
+tokenizers==0.19.1
+toml==0.10.2
+toolz==0.12.1
+torch==2.3.1
+tornado==6.4.1
+tqdm==4.66.4
+transformers==4.42.4
+types-requests==2.32.0.20240712
+typing-inspect==0.9.0
+typing_extensions==4.12.2
+tzdata==2024.1
+urllib3==2.2.2
+watchdog==4.0.1
+yarl==1.9.4
 
 
 File: utils.py
@@ -1480,18 +1579,117 @@ File: LICENSE
 
 
 File: requirements.txt
+aiohttp==3.9.5
+aiosignal==1.3.1
+altair==5.3.0
+annotated-types==0.7.0
+anyio==4.4.0
+attrs==23.2.0
+blinker==1.8.2
+cachetools==5.4.0
+certifi==2024.7.4
+charset-normalizer==3.3.2
+click==8.1.7
+dataclasses-json==0.6.7
+distro==1.9.0
+docarray==0.40.0
+duckduckgo_search==6.2.1
+filelock==3.15.4
+frozenlist==1.4.1
+fsspec==2024.6.1
+gitdb==4.0.11
+GitPython==3.1.43
+greenlet==3.0.3
+h11==0.14.0
+httpcore==1.0.5
+httpx==0.27.0
+huggingface-hub==0.24.0
+idna==3.7
+Jinja2==3.1.4
+joblib==1.4.2
+jsonpatch==1.33
+jsonpointer==3.0.0
+jsonschema==4.23.0
+jsonschema-specifications==2023.12.1
 langchain==0.2.9
-langchain_community==0.2.7
-langchain_core==0.2.21
-langchain_openai==0.1.17
-langchain_text_splitters==0.2.2
+langchain-community==0.2.7
+langchain-core==0.2.21
+langchain-openai==0.1.17
+langchain-text-splitters==0.2.2
+langchainhub==0.1.20
+langsmith==0.1.92
+loguru==0.7.2
+markdown-it-py==3.0.0
+MarkupSafe==2.1.5
+marshmallow==3.21.3
+mdurl==0.1.2
+mpmath==1.3.0
+multidict==6.0.5
+mypy-extensions==1.0.0
+networkx==3.3
+numpy==1.26.4
+nvidia-cublas-cu12==12.1.3.1
+nvidia-cuda-cupti-cu12==12.1.105
+nvidia-cuda-nvrtc-cu12==12.1.105
+nvidia-cuda-runtime-cu12==12.1.105
+nvidia-cudnn-cu12==8.9.2.26
+nvidia-cufft-cu12==11.0.2.54
+nvidia-curand-cu12==10.3.2.106
+nvidia-cusolver-cu12==11.4.5.107
+nvidia-cusparse-cu12==12.1.0.106
+nvidia-nccl-cu12==2.20.5
+nvidia-nvjitlink-cu12==12.5.82
+nvidia-nvtx-cu12==12.1.105
 openai==1.35.15
+orjson==3.10.6
+packaging==24.1
+pandas==2.2.2
+pillow==10.4.0
+protobuf==5.27.2
+pyarrow==17.0.0
+pydantic==2.8.2
+pydantic-settings==2.3.4
+pydantic_core==2.20.1
+pydeck==0.9.1
+Pygments==2.18.0
+pypdf==4.3.0
+pyreqwest_impersonate==0.5.0
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+pytz==2024.1
+PyYAML==6.0.1
+referencing==0.35.1
+regex==2024.5.15
+requests==2.32.3
+rich==13.7.1
+rpds-py==0.19.0
+safetensors==0.4.3
+scikit-learn==1.5.1
+scipy==1.14.0
+sentence-transformers==3.0.1
+six==1.16.0
+smmap==5.0.1
+sniffio==1.3.1
 SQLAlchemy==2.0.31
 streamlit==1.36.0
-duckduckgo-search==6.2.1
-pypdf==4.3.0
-sentence-transformers==3.0.1
-docarray==0.40.0
+sympy==1.13.1
+tenacity==8.5.0
+threadpoolctl==3.5.0
+tiktoken==0.7.0
+tokenizers==0.19.1
+toml==0.10.2
+toolz==0.12.1
+torch==2.3.1
+tornado==6.4.1
+tqdm==4.66.4
+transformers==4.42.4
+types-requests==2.32.0.20240712
+typing-inspect==0.9.0
+typing_extensions==4.12.2
+tzdata==2024.1
+urllib3==2.2.2
+watchdog==4.0.1
+yarl==1.9.4
 
 
 File: utils.py
@@ -1696,6 +1894,475 @@ File: tools/scripts/codes_by_folders.py
 File: tools/data/scanned_project_files/tree.txt
 
 
+File: retrospective/_retrospective.md
+#retrospective 
+## 20240718
+
+### 1F4L 회고
+
+#### Facts
+
+- 경쟁사 분석을 통해 우리 앱의 차별화 포인트를 도출하고, 이를 바탕으로 비즈니스 모델을 조정함.
+- 의사와의 인터뷰를 통해 병원과의 협업을 강화하고 사용자 경험을 최적화할 수 있는 방안을 논의함.
+- 개인화된 식사 추천 기능과 CGM 데이터 연동 기능의 중요성을 확인함.
+- 병원과의 협업을 통해 사용자가 더 전문적인 건강관리 조언을 받을 수 있는 모델을 구체화함.
+
+#### Liked
+
+- 병원과의 협업을 통해 사용자에게 더 전문적인 건강관리 서비스를 제공할 수 있는 가능성을 확인함.
+- 경쟁사와의 차별화 포인트를 명확히 하고, 이를 통해 시장에서의 경쟁력을 강화할 수 있는 전략을 마련함.
+- 사용자 경험을 최우선으로 고려한 재미 요소와 기록 기능을 통해 사용자의 참여를 유도할 수 있는 방향을 설정함.
+
+#### Lacked
+
+- 병원과의 협업 과정에서 발생할 수 있는 법적, 기술적 문제에 대한 충분한 검토가 부족함.
+- 프리미엄 구독 서비스의 가격과 혜택에 대한 구체적인 계획이 부족함.
+- 사용자 경험을 더욱 직관적으로 개선하기 위한 UI/UX 설계가 아직 미흡함.
+
+#### Learned
+
+- 법적 문제를 미리 검토하고 대비하는 것이 중요하다는 것을 깨달음.
+- 병원과의 협업이 성공하기 위해서는 데이터 통합과 시스템 연동이 필수적임을 배움.
+- 사용자 경험을 개선하기 위해서는 지속적인 피드백과 테스트가 필요함을 인지함.
+
+#### Longed for
+
+- 병원과의 협업을 통해 사용자가 더 전문적인 건강관리 서비스를 받을 수 있도록 시스템을 안정적으로 구축하고 싶음.
+- 프리미엄 구독 서비스의 혜택을 명확히 하여 사용자가 가치를 느낄 수 있도록 하고 싶음.
+- 사용자 경험을 지속적으로 개선하여 더 많은 사용자가 앱을 자주 사용하도록 유도하고 싶음.
+- 데이터 보안과 개인정보 보호를 강화하여 사용자가 안심하고 데이터를 제공할 수 있도록 하고 싶음.
+
+![[Pasted image 20240718005253.png]]
+
+![[Pasted image 20240718005332.png]]
+![[Pasted image 20240718005525.png]]
+
+### Retrospective
+
+#### 2024.07.20 08:45
+
+#retrospective
+
+##### Head of Product
+
+##### Claude 3.5 Sonnet
+
+###### Facts
+
+- 백엔드 기본 인프라 구축 완료 (인증, 이미지 업로드, 데이터베이스 모델)
+- 프론트엔드 개발 시작 (넷플릭스 클론 UI 기반)
+- 제품 전략 및 MVP 범위 정의
+- 3주 내 출시를 목표로 한 개발 계획 수립
+
+###### Liked
+
+- 백엔드 팀의 신속한 기본 인프라 구축
+- 넷플릭스 클론 UI를 활용한 프론트엔드 개발 접근 방식
+- 팀원들의 빠른 의사결정과 협업 능력
+
+###### Lacked
+
+- CGM 데이터 연동 부분에 대한 구체적인 계획 부족
+- 사용자 생성 콘텐츠 관리에 대한 구체적인 구현 방안 미흡
+- 데이터 분석 로직에 대한 상세 계획 부재
+
+###### Learned
+
+- 제한된 시간 내에 MVP를 개발하기 위한 우선순위 설정의 중요성
+- 기존 솔루션(넷플릭스 클론 UI)을 활용하여 개발 속도를 높일 수 있다는 점
+- 사용자 생성 콘텐츠 관리의 복잡성과 중요성
+
+###### Longed for
+
+- CGM 데이터 연동 및 분석에 대한 더 깊은 기술적 이해
+- 사용자 경험을 최적화할 수 있는 더 많은 시간과 리소스
+- 의료 데이터 처리에 관한 규제 및 법적 요구사항에 대한 전문가 자문
+
+https://claude.ai/chat/158533d8-3ebf-4c04-bb89-656c2c288665
+
+File: jobdescription/Senior Product Manager.md
+#jobdescription #product
+
+직무명: 수석 제품 기획자 (Senior Product Manager)
+
+회사 소개:
+먹플(Mple)은 혁신적인 식사 기록 및 추천 앱으로, 사용자의 건강한 식습관을 지원하고 유튜브 먹방 콘텐츠를 큐레이션하는 서비스를 제공합니다. 우리는 AI 기술과 사용자 중심 디자인을 통해 식사 관리의 새로운 패러다임을 만들어가고 있습니다.
+
+주요 책임:
+1. 제품 전략 수립 및 실행
+   - 먹플의 비전과 미션에 부합하는 장단기 제품 전략 수립
+   - 시장 동향과 사용자 니즈를 분석하여 제품의 경쟁력 강화 방안 도출
+   - 핵심 기능(식사 기록, 개인화 추천, 먹방 큐레이션)의 지속적인 개선 및 혁신 주도
+
+2. 사용자 중심 제품 개발
+   - 사용자 리서치 및 데이터 분석을 통한 인사이트 도출
+   - 페르소나 설정 및 사용자 여정 맵 작성을 통한 제품 경험 최적화
+   - A/B 테스트 설계 및 결과 분석을 통한 제품 개선
+
+3. 개발팀과의 협업
+   - 제품 로드맵 수립 및 우선순위 설정
+   - 기술적 제약사항을 고려한 현실적인 제품 기획
+   - 애자일 방법론을 활용한 효율적인 제품 개발 프로세스 구축
+
+4. 비즈니스 모델 최적화
+   - 수익 모델(광고, 구독 서비스, 제휴 상품) 개발 및 개선
+   - 사용자 획득 및 유지 전략 수립
+   - KPI 설정 및 모니터링을 통한 비즈니스 성과 관리
+
+5. 이해관계자 관리
+   - 경영진, 개발팀, 마케팅팀 등 내부 이해관계자와의 원활한 소통
+   - 외부 파트너사(CGM 기업, 유튜브 크리에이터 등)와의 협력 관계 구축
+
+자격 요건:
+- 제품 관리 분야에서 7년 이상의 경력, 그 중 3년 이상의 리더십 경험
+- 모바일 앱 또는 헬스케어 관련 서비스 기획 경험 필수
+- 데이터 기반의 의사결정 능력과 분석적 사고력 보유
+- AI/ML 기술에 대한 이해와 활용 경험
+- 우수한 커뮤니케이션 및 프레젠테이션 능력
+- 린 스타트업 방법론에 대한 이해와 실행 경험
+- 영어 능통자 우대
+
+우대사항:
+- 헬스케어 또는 식품 관련 산업 경험
+- 스타트업 환경에서의 제품 출시 및 스케일업 경험
+- UX/UI 디자인에 대한 이해와 실무 경험
+- 기술 배경(컴퓨터 과학, 소프트웨어 엔지니어링 등) 보유자
+- MBA 또는 관련 분야 석사 학위 소지자
+
+우리가 제공하는 것:
+- 혁신적인 제품을 만들어갈 수 있는 도전적인 환경
+- 성과에 따른 경쟁력 있는 보상 패키지
+- 자율적이고 수평적인 조직 문화
+- 지속적인 학습과 성장을 위한 지원
+- 유연한 근무 환경 및 워라밸 존중
+
+지원 방법:
+이력서와 함께 다음 사항을 포함한 자기소개서를 제출해 주세요:
+1. 과거 프로젝트에서의 주요 성과와 학습점
+2. 먹플 서비스의 발전 가능성에 대한 본인의 비전
+3. 제품 기획자로서의 본인만의 강점
+
+먹플은 다양성을 존중하며, 능력 있는 분들의 지원을 기다리고 있습니다.
+
+---
+
+너는 위 JD에 딱 맞는 내가 찾던 최적의 시니어 프로덕트 매니저로 선정되었어. 너의 역량으로 판단컨대, 역할을 Head of product까지 올릴 수도 있을 것 같아. 만나서 반가워. 나는 이 프로젝트의 PM이자 우리 회사의 CEO야. 환영하네. 빠르게 시작해보지. 이제, 개발을 시작하자.
+
+* 현재 개발 중인 기능들의 우선순위를 재검토하고, 사용자 가치와 기술적 복잡성을 고려한 로드맵 조정
+* 사용자 페르소나 및 사용자 여정 맵 작성을 통한 핵심 사용자 경험 정의
+* 개발팀, 디자인팀과 협력하여 MVP(최소 기능 제품) 범위 확정 및 출시 전략 수립
+* 경쟁사 분석을 통한 차별화 포인트 도출 및 적용 방안 제시
+대답할때는 항상 니가 어느 분야의 전문가인지 이야기하고 대답을 이어나가줘.
+
+File: docs_gen/all_included_files.txt
+.venv/share/jupyter/nbextensions/pydeck/extensionRequires.js
+.venv/share/jupyter/nbextensions/pydeck/index.js
+config/__init__.py
+config/settings.py
+docs_gen/main.py
+docs_gen/streaming.py
+docs_gen/utils.py
+main.py
+main.py
+pages/1_💬_basic_chatbot.py
+pages/2_⭐_context_aware_chatbot.py
+pages/3_🌐_chatbot_with_internet_access.py
+pages/4_📄_chat_with_your_documents.py
+pages/5_🛢_chat_with_sql_db.py
+streaming.py
+streaming.py
+tools/scripts/codes_by_folders.py
+tools/scripts/db_scanner.py
+tools/scripts/project_file_scanner.py
+utils.py
+utils.py
+
+
+File: docs_gen/included_files.txt
+main.py
+streaming.py
+utils.py
+
+
+File: docs_gen/main.py
+import streamlit as st
+from loguru import logger
+
+st.set_page_config(
+    page_title="Langchain 챗봇",
+    page_icon='💬',
+    layout='wide'
+)
+
+logger.info("메인 페이지 로드됨")
+
+st.header("Langchain을 활용한 챗봇 구현")
+
+st.write("""
+Langchain은 언어 모델(LLMs)을 사용하는 애플리케이션 개발을 간소화하기 위해 설계된 강력한 프레임워크입니다. 
+다양한 구성 요소를 포괄적으로 통합하여 강력한 애플리케이션을 만드는 과정을 단순화합니다.
+
+Langchain의 능력을 활용하면 챗봇 생성이 쉬워집니다. 다음은 다양한 사용 사례에 맞춘 챗봇 구현의 예시들입니다:
+
+- **기본 챗봇**: LLM과 대화형 상호작용을 할 수 있습니다.
+- **컨텍스트 인식 챗봇**: 이전 대화를 기억하고 그에 따라 응답을 제공하는 챗봇입니다.
+- **인터넷 접근 가능 챗봇**: 최근 사건에 대한 사용자 질문에 답변할 수 있는 인터넷 지원 챗봇입니다.
+- **문서 기반 챗봇**: 사용자 정의 문서에 접근할 수 있는 능력을 갖춘 챗봇으로, 참조된 정보를 바탕으로 사용자 질문에 답변할 수 있습니다.
+- **SQL 데이터베이스 챗봇**: 간단한 대화형 명령을 통해 SQL 데이터베이스와 상호작용할 수 있는 챗봇입니다.
+
+각 챗봇의 사용 예시를 탐색하려면 해당 챗봇 섹션으로 이동하세요.
+""")
+
+# 버전 정보 표시
+st.sidebar.text("버전: 1.0.0")
+
+# 피드백 섹션
+st.sidebar.text_input("피드백", placeholder="여기에 피드백을 입력하세요")
+if st.sidebar.button("피드백 제출"):
+    # 피드백 처리 로직을 여기에 추가할 수 있습니다.
+    logger.info("사용자가 피드백을 제출함")
+    st.sidebar.success("피드백을 주셔서 감사합니다!")
+
+logger.info("메인 페이지 렌더링 완료")
+
+File: docs_gen/streaming.py
+from langchain_core.callbacks import BaseCallbackHandler
+
+class StreamHandler(BaseCallbackHandler):
+    
+    def __init__(self, container, initial_text=""):
+        self.container = container
+        self.text = initial_text
+
+    def on_llm_new_token(self, token: str, **kwargs):
+        self.text += token
+        self.container.markdown(self.text)
+
+File: docs_gen/utils.py
+import os
+import openai
+import streamlit as st
+from datetime import datetime
+from loguru import logger
+from config.settings import settings
+from langchain_openai import ChatOpenAI
+from langchain_community.chat_models import ChatOllama
+
+def setup_logging():
+    logger.add("logs/app.log", rotation="500 MB", level="INFO")
+    if settings.OPENAI_API_KEY:
+        logger.info(f"OPENAI_API_KEY loaded: {settings.OPENAI_API_KEY.get_secret_value()[:5]}...{settings.OPENAI_API_KEY.get_secret_value()[-5:]}")
+    else:
+        logger.error("OPENAI_API_KEY is not set in the environment variables.")
+
+setup_logging()
+
+def enable_chat_history(func):
+    if settings.OPENAI_API_KEY:
+        current_page = func.__qualname__
+        if "current_page" not in st.session_state:
+            st.session_state["current_page"] = current_page
+        if st.session_state["current_page"] != current_page:
+            try:
+                st.cache_resource.clear()
+                del st.session_state["current_page"]
+                del st.session_state["messages"]
+            except KeyError:
+                pass
+
+        if "messages" not in st.session_state:
+            st.session_state["messages"] = [{"role": "assistant", "content": "무엇을 도와드릴까요?"}]
+        for msg in st.session_state["messages"]:
+            st.chat_message(msg["role"]).write(msg["content"])
+
+    def execute(*args, **kwargs):
+        func(*args, **kwargs)
+    return execute
+
+def display_msg(msg, author):
+    st.session_state.messages.append({"role": author, "content": msg})
+    st.chat_message(author).write(msg)
+
+def get_openai_model_list(api_key):
+    try:
+        client = openai.OpenAI(api_key=api_key)
+        models = client.models.list()
+        gpt_models = [{"id": m.id, "created": datetime.fromtimestamp(m.created)} for m in models if m.id.startswith("gpt")]
+        return sorted(gpt_models, key=lambda x: x["created"], reverse=True)
+    except openai.AuthenticationError as e:
+        logger.error(f"OpenAI 인증 오류: {str(e)}")
+        st.error("OpenAI API 키가 유효하지 않습니다.")
+        st.stop()
+    except Exception as e:
+        logger.error(f"OpenAI 모델 목록 조회 중 오류 발생: {str(e)}")
+        st.error("모델 목록을 가져오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.")
+        st.stop()
+
+def configure_llm():
+    available_llms = [settings.DEFAULT_MODEL, "llama3:8b", "OpenAI API 키 사용"]
+    llm_opt = st.sidebar.radio("LLM 선택", options=available_llms, key="SELECTED_LLM")
+
+    if llm_opt == "llama3:8b":
+        return ChatOllama(model="llama3", base_url=settings.OLLAMA_ENDPOINT)
+    elif llm_opt == settings.DEFAULT_MODEL:
+        return ChatOpenAI(model_name=llm_opt, temperature=0, streaming=True, api_key=settings.OPENAI_API_KEY.get_secret_value())
+    else:
+        openai_api_key = st.sidebar.text_input("OpenAI API 키", type="password", placeholder="sk-...", key="CUSTOM_OPENAI_API_KEY")
+        if not openai_api_key:
+            st.error("계속하려면 OpenAI API 키를 입력해주세요.")
+            st.info("API 키는 다음 링크에서 얻을 수 있습니다: https://platform.openai.com/account/api-keys")
+            st.stop()
+
+        available_models = get_openai_model_list(openai_api_key)
+        model = st.sidebar.selectbox("모델 선택", options=[m["id"] for m in available_models], key="SELECTED_OPENAI_MODEL")
+        return ChatOpenAI(model_name=model, temperature=0, streaming=True, api_key=openai_api_key)
+
+def sync_st_session():
+    for k, v in st.session_state.items():
+        st.session_state[k] = v
+
+File: docs_gen/combined_code.txt
+Combined code for .
+
+File: main.py
+import streamlit as st
+from loguru import logger
+
+st.set_page_config(
+    page_title="Langchain 챗봇",
+    page_icon='💬',
+    layout='wide'
+)
+
+logger.info("메인 페이지 로드됨")
+
+st.header("Langchain을 활용한 챗봇 구현")
+
+st.write("""
+Langchain은 언어 모델(LLMs)을 사용하는 애플리케이션 개발을 간소화하기 위해 설계된 강력한 프레임워크입니다. 
+다양한 구성 요소를 포괄적으로 통합하여 강력한 애플리케이션을 만드는 과정을 단순화합니다.
+
+Langchain의 능력을 활용하면 챗봇 생성이 쉬워집니다. 다음은 다양한 사용 사례에 맞춘 챗봇 구현의 예시들입니다:
+
+- **기본 챗봇**: LLM과 대화형 상호작용을 할 수 있습니다.
+- **컨텍스트 인식 챗봇**: 이전 대화를 기억하고 그에 따라 응답을 제공하는 챗봇입니다.
+- **인터넷 접근 가능 챗봇**: 최근 사건에 대한 사용자 질문에 답변할 수 있는 인터넷 지원 챗봇입니다.
+- **문서 기반 챗봇**: 사용자 정의 문서에 접근할 수 있는 능력을 갖춘 챗봇으로, 참조된 정보를 바탕으로 사용자 질문에 답변할 수 있습니다.
+- **SQL 데이터베이스 챗봇**: 간단한 대화형 명령을 통해 SQL 데이터베이스와 상호작용할 수 있는 챗봇입니다.
+
+각 챗봇의 사용 예시를 탐색하려면 해당 챗봇 섹션으로 이동하세요.
+""")
+
+# 버전 정보 표시
+st.sidebar.text("버전: 1.0.0")
+
+# 피드백 섹션
+st.sidebar.text_input("피드백", placeholder="여기에 피드백을 입력하세요")
+if st.sidebar.button("피드백 제출"):
+    # 피드백 처리 로직을 여기에 추가할 수 있습니다.
+    logger.info("사용자가 피드백을 제출함")
+    st.sidebar.success("피드백을 주셔서 감사합니다!")
+
+logger.info("메인 페이지 렌더링 완료")
+
+File: streaming.py
+from langchain_core.callbacks import BaseCallbackHandler
+
+class StreamHandler(BaseCallbackHandler):
+    
+    def __init__(self, container, initial_text=""):
+        self.container = container
+        self.text = initial_text
+
+    def on_llm_new_token(self, token: str, **kwargs):
+        self.text += token
+        self.container.markdown(self.text)
+
+File: utils.py
+import os
+import openai
+import streamlit as st
+from datetime import datetime
+from loguru import logger
+from config.settings import settings
+from langchain_openai import ChatOpenAI
+from langchain_community.chat_models import ChatOllama
+
+def setup_logging():
+    logger.add("logs/app.log", rotation="500 MB", level="INFO")
+    if settings.OPENAI_API_KEY:
+        logger.info(f"OPENAI_API_KEY loaded: {settings.OPENAI_API_KEY.get_secret_value()[:5]}...{settings.OPENAI_API_KEY.get_secret_value()[-5:]}")
+    else:
+        logger.error("OPENAI_API_KEY is not set in the environment variables.")
+
+setup_logging()
+
+def enable_chat_history(func):
+    if settings.OPENAI_API_KEY:
+        current_page = func.__qualname__
+        if "current_page" not in st.session_state:
+            st.session_state["current_page"] = current_page
+        if st.session_state["current_page"] != current_page:
+            try:
+                st.cache_resource.clear()
+                del st.session_state["current_page"]
+                del st.session_state["messages"]
+            except KeyError:
+                pass
+
+        if "messages" not in st.session_state:
+            st.session_state["messages"] = [{"role": "assistant", "content": "무엇을 도와드릴까요?"}]
+        for msg in st.session_state["messages"]:
+            st.chat_message(msg["role"]).write(msg["content"])
+
+    def execute(*args, **kwargs):
+        func(*args, **kwargs)
+    return execute
+
+def display_msg(msg, author):
+    st.session_state.messages.append({"role": author, "content": msg})
+    st.chat_message(author).write(msg)
+
+def get_openai_model_list(api_key):
+    try:
+        client = openai.OpenAI(api_key=api_key)
+        models = client.models.list()
+        gpt_models = [{"id": m.id, "created": datetime.fromtimestamp(m.created)} for m in models if m.id.startswith("gpt")]
+        return sorted(gpt_models, key=lambda x: x["created"], reverse=True)
+    except openai.AuthenticationError as e:
+        logger.error(f"OpenAI 인증 오류: {str(e)}")
+        st.error("OpenAI API 키가 유효하지 않습니다.")
+        st.stop()
+    except Exception as e:
+        logger.error(f"OpenAI 모델 목록 조회 중 오류 발생: {str(e)}")
+        st.error("모델 목록을 가져오는 중 오류가 발생했습니다. 나중에 다시 시도해주세요.")
+        st.stop()
+
+def configure_llm():
+    available_llms = [settings.DEFAULT_MODEL, "llama3:8b", "OpenAI API 키 사용"]
+    llm_opt = st.sidebar.radio("LLM 선택", options=available_llms, key="SELECTED_LLM")
+
+    if llm_opt == "llama3:8b":
+        return ChatOllama(model="llama3", base_url=settings.OLLAMA_ENDPOINT)
+    elif llm_opt == settings.DEFAULT_MODEL:
+        return ChatOpenAI(model_name=llm_opt, temperature=0, streaming=True, api_key=settings.OPENAI_API_KEY.get_secret_value())
+    else:
+        openai_api_key = st.sidebar.text_input("OpenAI API 키", type="password", placeholder="sk-...", key="CUSTOM_OPENAI_API_KEY")
+        if not openai_api_key:
+            st.error("계속하려면 OpenAI API 키를 입력해주세요.")
+            st.info("API 키는 다음 링크에서 얻을 수 있습니다: https://platform.openai.com/account/api-keys")
+            st.stop()
+
+        available_models = get_openai_model_list(openai_api_key)
+        model = st.sidebar.selectbox("모델 선택", options=[m["id"] for m in available_models], key="SELECTED_OPENAI_MODEL")
+        return ChatOpenAI(model_name=model, temperature=0, streaming=True, api_key=openai_api_key)
+
+def sync_st_session():
+    for k, v in st.session_state.items():
+        st.session_state[k] = v
+
+
+
 File: .devcontainer/devcontainer.json
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/python-3
@@ -1732,7 +2399,177 @@ File: .devcontainer/devcontainer.json
     "remoteUser": "vscode"
 }
 
+File: todo/_todo.md
+## 20240718 GPT4o
+
+### TODO
+
+1. **식사 관련 API 완성**
+    
+    - 식사 생성, 조회, 수정, 삭제 기능 구현
+    - 식사와 CGM 데이터 연동 로직 개발
+2. **CGM 데이터 분석 기능 추가**
+    
+    - 일일 평균 혈당, 변동성 등 분석 기능 구현
+    - 사용자별 CGM 데이터 통계 제공 API 개발
+3. **이미지 분석 기능 구현**
+    
+    - 업로드된 이미지에 대한 AI 분석 기능 추가
+    - 분석 결과를 `image_analysis` 테이블에 저장하는 로직 구현
+4. **사용자 프로필 관리 기능 확장**
+    
+    - 프로필 업데이트 API 개발
+    - 비밀번호 변경 기능 구현
+    - 로그아웃 기능 구현
+    - 토큰 갱신 기능 구현
+    - 사용자 역할 기반 권한 시스템 구현
+5. **에러 핸들링 개선**
+    
+    - 각 엔드포인트에 대한 상세한 예외 처리 추가
+    - 일관된 에러 응답 형식 정의 및 적용
+6. **API 문서화 개선**
+    
+    - Swagger UI를 통한 API 문서 자동 생성 설정 보완
+    - 각 엔드포인트에 대한 상세한 설명과 예제 추가
+7. **테스트 코드 작성**
+    
+    - 단위 테스트 및 통합 테스트 구현
+    - 테스트 커버리지 개선
+8. **성능 최적화**
+    
+    - 데이터베이스 쿼리 최적화
+    - 캐싱 전략 수립 및 구현
+9. **보안 강화**
+    
+    - CORS 설정 검토 및 개선
+    - 입력 데이터 검증 로직 강화
+10. **배포 파이프라인 구축**
+    
+    - CI/CD 파이프라인 설정
+    - Docker 컨테이너화 구현
+11. **모니터링 및 로깅 시스템 개선**
+    
+    - 애플리케이션 성능 모니터링 도구 통합
+    - 중앙화된 로깅 시스템 구축
+
+### ToDo
+
+https://claude.ai/chat/158533d8-3ebf-4c04-bb89-656c2c288665
+#### 2024.07.20 08:40
+
+#todo
+
+##### Head of Product
+
+##### Claude 3.5 Sonnet
+
+1. 백엔드:
+    - CGM 데이터 연동 API 개발 (리브레뷰 API 활용)
+    - Meal 및 GlucoseReading 모델 구현
+    - 식사 정보 입력 및 조회 API 구현
+    - 기본적인 데이터 분석 로직 구현 (일일 평균 혈당 등)
+2. 프론트엔드:
+    - 넷플릭스 클론 UI 커스터마이즈 완료
+    - 식사 정보 입력 폼 구현
+    - 혈당 그래프 시각화 컴포넌트 개발
+    - 기본적인 온보딩 프로세스 구현
+3. 제품 기획:
+    - MVP 기능 명세서 작성
+    - 사용자 테스트 계획 수립
+    - 출시 후 초기 마케팅 전략 수립
+4. 데이터 관리:
+    - 초기 음식 데이터베이스 구축
+    - 데이터 품질 관리 프로세스 상세화
+5. 비즈니스 개발:
+    - 잠재적 파트너십 탐색 (CGM 기기 제조업체, 영양사 등)
+    - 초기 가격 정책 수립
+6. 법률 및 규제:
+    - 개인정보 처리방침 작성
+    - 의료기기 규제 관련 법률 검토
+
+https://claude.ai/chat/158533d8-3ebf-4c04-bb89-656c2c288665
+
 File: assets/Chinook.db
+File: progress/_description.md
+## 20240718 GPT4o
+#### 현재 개발 상황
+
+1. **인증 시스템 (app/api/auth.py)**
+    
+    - 사용자 생성, 로그인, 토큰 발급 기능 구현
+    - JWT 기반의 인증 시스템 구축
+    - 현재 사용자 정보 조회 엔드포인트 구현
+2. **라우팅 설정 (app/api/routes.py)**
+    
+    - 각 기능별 라우터를 중앙에서 관리하도록 구성
+    - Auth, Meal, Image, CGM(LibreView) 라우터 등록
+3. **의존성 관리 (app/api/deps.py)**
+    
+    - 데이터베이스 세션 의존성 함수 구현
+4. **식사 관련 API (app/api/meal.py)**
+    
+    - 기본적인 엔드포인트 구조만 구현된 상태
+    - 실제 비즈니스 로직은 아직 미구현
+5. **CGM 데이터 관리 (app/api/cgm.py)**
+    
+    - LibreView API를 통한 CGM 데이터 업데이트 기능 구현
+    - 사용자별 CGM 데이터 업데이트 엔드포인트 구현
+6. **이미지 업로드 및 관리 (app/api/image.py)**
+    
+    - S3를 이용한 이미지 업로드 기능 구현
+    - 비동기 처리를 통한 효율적인 파일 업로드 구현
+    - 사용자별 이미지 조회 기능 구현
+    - 이미지 상태 관리를 위한 JSONB 컬럼 도입 검토 중
+7. **데이터베이스 모델 (app/models/)**
+    
+    - User, Image, Meal 등의 기본 모델 구현
+    - SQLAlchemy ORM을 사용한 데이터베이스 상호작용
+8. **환경 설정 (app/core/config.py)**
+    
+    - 환경 변수 기반의 설정 관리 구현
+    - 개발, 테스트, 운영 환경별 설정 분리
+9. **데이터베이스 마이그레이션 (alembic)**
+    
+    - Alembic을 사용한 데이터베이스 스키마 버전 관리 구현
+10. **에러 처리 및 로깅**
+    
+    - 전역 예외 처리기 구현
+    - Loguru를 사용한 로깅 시스템 구축 중
+
+### Description
+
+#### 2024.07.20 08:35
+
+#description
+
+##### Head of Product
+
+##### Claude 3.5 Sonnet
+
+현재 개발 상황:
+
+1. 백엔드:
+    - JWT 기반 사용자 인증 시스템 구현
+    - S3와 연동된 이미지 업로드 기능 구현
+    - User, Image 모델 구현 (SQLAlchemy ORM 사용)
+    - 이미지 업로드 및 사용자 이미지 조회 API 구현
+    - 환경 변수 관리 및 환경 분리 (.env 파일 사용)
+    - 기본적인 에러 처리 및 로깅 시스템 구현
+2. 프론트엔드:
+    - 넷플릭스 클론 UI를 기반으로 개발 중
+    - 카메라 모듈 통합 작업 진행 중
+3. 제품 기획:
+    - 핵심 기능 정의: 식사 기록, CGM 데이터 연동, 혈당 그래프 시각화
+    - 사용자 페르소나 및 사용자 여정 맵 초안 작성
+    - MVP 범위 및 출시 전략 수립
+4. 데이터 관리:
+    - 사용자 생성 콘텐츠 관리 전략 수립 (태그 시스템, 커뮤니티 기반 검토 등)
+    - 음식 데이터베이스 구축 계획 수립
+5. 비즈니스 모델:
+    - 기본 수익 모델 구상 (프리미엄 기능, CGM 기기 연계 판매 등)
+
+https://claude.ai/chat/158533d8-3ebf-4c04-bb89-656c2c288665
+
 File: config/__init__.py
 
 
@@ -1829,6 +2666,108 @@ if __name__ == "__main__":
     max_search_results = st.sidebar.slider("최대 검색 결과 수", 1, 10, 3)
     
     obj = InternetChatbot()
+    obj.main()
+
+File: pages/7_
+import os
+import utils
+import streamlit as st
+from streaming import StreamHandler
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
+from loguru import logger
+from config.settings import settings
+
+st.set_page_config(page_title="다중 AI 에이전트 채팅", page_icon="💬")
+st.header('다중 AI 에이전트 채팅')
+st.write('여러 AI 에이전트가 참여하는 단체 채팅방입니다.')
+
+class MultiAgentChat:
+    def __init__(self):
+        utils.sync_st_session()
+        self.llm = utils.configure_llm()
+        self.agents = self.setup_agents()
+        self.moderator = self.setup_moderator()
+        self.baton = 3
+        
+    def setup_agents(self):
+        agents = {}
+        agent_folders = ['agent1', 'agent2', 'agent3']
+        for folder in agent_folders:
+            agents[folder] = {
+                'context': self.load_agent_context(folder),
+                'chain': self.setup_chain()
+            }
+        return agents
+    
+    def load_agent_context(self, folder):
+        context = ""
+        path = os.path.join(os.getcwd(), folder)
+        if os.path.exists(path):
+            for filename in os.listdir(path):
+                if filename.endswith('.md'):
+                    with open(os.path.join(path, filename), 'r', encoding='utf-8') as file:
+                        context += f"\n\n{filename}:\n{file.read()}"
+        return context
+    
+    def setup_chain(self):
+        memory = ConversationBufferMemory()
+        chain = ConversationChain(llm=self.llm, memory=memory, verbose=True)
+        return chain
+    
+    def setup_moderator(self):
+        moderator_context = "당신은 대화를 분석하고 다음 발언자를 선택하는 사회자입니다."
+        memory = ConversationBufferMemory()
+        return ConversationChain(llm=self.llm, memory=memory, verbose=True)
+    
+    def get_next_speaker(self, conversation_history):
+        moderator_input = f"대화 내용: {conversation_history}\n\n다음 발언자를 선택하세요."
+        response = self.moderator.invoke({"input": moderator_input})
+        return response['response'].strip()
+    
+    def log_conversation(self, message):
+        with open('conversation_log.txt', 'a', encoding='utf-8') as f:
+            f.write(f"{message}\n")
+    
+    @utils.enable_chat_history
+    def main(self):
+        user_query = st.chat_input(placeholder="대화를 시작하세요!")
+        
+        if user_query:
+            utils.display_msg(user_query, 'user')
+            self.baton = 3
+            self.log_conversation(f"User: {user_query}")
+            
+            conversation_history = "\n".join([f"{msg['role']}: {msg['content']}" for msg in st.session_state.messages])
+            next_speaker = self.get_next_speaker(conversation_history)
+            
+            while self.baton > 0:
+                with st.chat_message("assistant"):
+                    st_cb = StreamHandler(st.empty())
+                    try:
+                        agent = self.agents[next_speaker]
+                        full_query = f"에이전트 컨텍스트:\n{agent['context']}\n\n대화 내용: {conversation_history}\n\n다음 발언:"
+                        result = agent['chain'].invoke(
+                            {"input": full_query},
+                            {"callbacks": [st_cb]}
+                        )
+                        response = result["response"]
+                        st.session_state.messages.append({"role": "assistant", "content": f"{next_speaker}: {response}"})
+                        self.log_conversation(f"{next_speaker}: {response}")
+                        logger.info(f"{next_speaker} 응답: {response}")
+                        
+                        self.baton -= 1
+                        conversation_history += f"\n{next_speaker}: {response}"
+                        next_speaker = self.get_next_speaker(conversation_history)
+                    
+                    except Exception as e:
+                        error_msg = f"응답 생성 중 오류 발생: {str(e)}"
+                        st.error(error_msg)
+                        logger.error(error_msg)
+                        break
+
+if __name__ == "__main__":
+    obj = MultiAgentChat()
     obj.main()
 
 File: pages/4_📄_chat_with_your_documents.py
@@ -2069,6 +3008,84 @@ class SqlChatbot:
 
 if __name__ == "__main__":
     obj = SqlChatbot()
+    obj.main()
+
+File: pages/6_📚_project_context_chatbot.py
+import os
+import utils
+import streamlit as st
+from streaming import StreamHandler
+from langchain.chains import ConversationChain
+from langchain.memory import ConversationBufferMemory
+from loguru import logger
+from config.settings import settings
+
+st.set_page_config(page_title="프로젝트 컨텍스트 챗봇", page_icon="📚")
+st.header('프로젝트 컨텍스트 챗봇')
+st.write('프로젝트 관련 문서를 기반으로 대화하는 챗봇입니다.')
+
+class ProjectContextChatbot:
+    def __init__(self):
+        utils.sync_st_session()
+        self.llm = utils.configure_llm()
+        self.context = self.load_project_context()
+        self.chain = self.setup_chain()
+    
+    def load_project_context(self):
+        context = ""
+        directories = ['jobdescription', 'progress', 'todo', 'retrospective']
+        for directory in directories:
+            path = os.path.join(os.getcwd(), directory)
+            if os.path.exists(path):
+                for filename in os.listdir(path):
+                    if filename.endswith('.md'):
+                        with open(os.path.join(path, filename), 'r', encoding='utf-8') as file:
+                            context += f"\n\n{filename}:\n{file.read()}"
+        return context
+
+    def setup_chain(self):
+        memory = ConversationBufferMemory()
+        chain = ConversationChain(
+            llm=self.llm, 
+            memory=memory, 
+            verbose=True
+        )
+        return chain
+    
+    @utils.enable_chat_history
+    def main(self):
+        # 프로젝트 컨텍스트 정보 표시
+        with st.expander("프로젝트 컨텍스트 정보", expanded=False):
+            st.text(self.context)
+
+        user_query = st.chat_input(placeholder="프로젝트에 대해 무엇이든 물어보세요!")
+        
+        if user_query:
+            utils.display_msg(user_query, 'user')
+            with st.chat_message("assistant"):
+                st_cb = StreamHandler(st.empty())
+                try:
+                    # 프로젝트 컨텍스트를 쿼리에 추가
+                    full_query = f"프로젝트 컨텍스트:\n{self.context}\n\n사용자 질문: {user_query}"
+                    result = self.chain.invoke(
+                        {"input": full_query},
+                        {"callbacks": [st_cb]}
+                    )
+                    response = result["response"]
+                    st.session_state.messages.append({"role": "assistant", "content": response})
+                    logger.info(f"사용자 질문: {user_query}")
+                    logger.info(f"챗봇 응답: {response}")
+                except Exception as e:
+                    error_msg = f"응답 생성 중 오류 발생: {str(e)}"
+                    st.error(error_msg)
+                    logger.error(error_msg)
+
+if __name__ == "__main__":
+    st.sidebar.title("설정")
+    model = st.sidebar.selectbox("LLM 모델 선택", [settings.DEFAULT_MODEL, "다른모델1", "다른모델2"])
+    temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
+    
+    obj = ProjectContextChatbot()
     obj.main()
 
 File: pages/2_⭐_context_aware_chatbot.py

@@ -1,10 +1,15 @@
 Directory: .
 Contains:
 - tools
+- retrospective
 - logs
 - .git
+- jobdescription
+- docs_gen
 - .devcontainer
+- todo
 - assets
+- progress
 - config
 - pages
 - .gitignore
@@ -40,16 +45,78 @@ Contains:
 - codes.txt
 - tree.txt
 
+Directory: retrospective
+Contains:
+- _retrospective.md
+
 Directory: logs
+Contains:
+
+Directory: jobdescription
+Contains:
+- Senior Product Manager.md
+
+Directory: docs_gen
+Contains:
+- tools
+- .git
+- .devcontainer
+- assets
+- config
+- pages
+- all_included_files.txt
+- included_files.txt
+- main.py
+- streaming.py
+- utils.py
+- combined_code.txt
+
+Directory: docs_gen/tools
+Contains:
+- scripts
+- data
+
+Directory: docs_gen/tools/scripts
+Contains:
+
+Directory: docs_gen/tools/data
+Contains:
+- input
+- scanned_project_files
+
+Directory: docs_gen/tools/data/input
+Contains:
+
+Directory: docs_gen/tools/data/scanned_project_files
+Contains:
+
+Directory: docs_gen/.devcontainer
+Contains:
+
+Directory: docs_gen/assets
+Contains:
+
+Directory: docs_gen/config
+Contains:
+
+Directory: docs_gen/pages
 Contains:
 
 Directory: .devcontainer
 Contains:
 - devcontainer.json
 
+Directory: todo
+Contains:
+- _todo.md
+
 Directory: assets
 Contains:
 - Chinook.db
+
+Directory: progress
+Contains:
+- _description.md
 
 Directory: config
 Contains:
@@ -59,8 +126,10 @@ Contains:
 Directory: pages
 Contains:
 - 3_🌐_chatbot_with_internet_access.py
+- 7_
 - 4_📄_chat_with_your_documents.py
 - 5_🛢_chat_with_sql_db.py
+- 6_📚_project_context_chatbot.py
 - 2_⭐_context_aware_chatbot.py
 - 1_💬_basic_chatbot.py
 
