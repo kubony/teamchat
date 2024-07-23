@@ -6,6 +6,8 @@ from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from loguru import logger
 from config.settings import settings
+import random
+import json
 
 st.set_page_config(page_title="다중 AI 에이전트 채팅", page_icon="💬")
 st.header('다중 AI 에이전트 채팅')
@@ -17,7 +19,9 @@ class MultiAgentChat:
         self.llm = utils.configure_llm()
         self.agents = self.setup_agents()
         self.moderator = self.setup_moderator()
-        self.baton = 3
+        self.baton = 0
+        self.conversation_history = []
+        self.log_file = 'agent_interactions.jsonl'
         
     def setup_agents(self):
         agents = {}
@@ -49,54 +53,59 @@ class MultiAgentChat:
         memory = ConversationBufferMemory(max_token_limit=1000)
         return ConversationChain(llm=self.llm, memory=memory, verbose=True)
     
-    def get_next_speaker(self, conversation_history):
-        moderator_input = f"대화 내용: {conversation_history}\n\n다음 발언자를 'agent1', 'agent2', 또는 'agent3' 중에서 선택하세요. 선택한 에이전트의 이름만 답변으로 제시하세요."
+    def get_next_speaker(self):
+        moderator_input = f"대화 내용: {' '.join(self.conversation_history)}\n\n다음 발언자를 'agent1', 'agent2', 또는 'agent3' 중에서 선택하세요. 선택한 에이전트의 이름만 답변으로 제시하세요."
         response = self.moderator.invoke({"input": moderator_input})
         next_speaker = response['response'].strip().lower()
         
-        # 유효한 에이전트 이름인지 확인
         if next_speaker not in ['agent1', 'agent2', 'agent3']:
             logger.warning(f"Invalid speaker selected: {next_speaker}. Defaulting to agent1.")
             return 'agent1'
         
         return next_speaker
     
-    def log_conversation(self, message):
-        with open('conversation_log.txt', 'a', encoding='utf-8') as f:
-            f.write(f"{message}\n")
+    def log_interaction(self, agent, prompt, response):
+        log_entry = {
+            "agent": agent,
+            "prompt": prompt,
+            "response": response
+        }
+        with open(self.log_file, 'a', encoding='utf-8') as f:
+            json.dump(log_entry, f, ensure_ascii=False)
+            f.write('\n')
     
     @utils.enable_chat_history
     def main(self):
         user_query = st.chat_input(placeholder="대화를 시작하세요!")
         
         if user_query:
+            self.conversation_history.append(f"User: {user_query}")
             utils.display_msg(user_query, 'user')
             self.baton = 3
             logger.info(f"대화 시작: 바톤 카운트 {self.baton}")
-            self.log_conversation(f"User: {user_query}")
-            
-            conversation_history = "\n".join([f"{msg['role']}: {msg['content']}" for msg in st.session_state.messages])
             
             while self.baton > 0:
-                next_speaker = self.get_next_speaker(conversation_history)
+                next_speaker = self.get_next_speaker()
                 
                 with st.chat_message("assistant"):
                     st_cb = StreamHandler(st.empty())
                     try:
                         agent = self.agents[next_speaker]
-                        full_query = f"에이전트 컨텍스트:\n{agent['context']}\n\n대화 내용: {conversation_history}\n\n다음 발언:"
+                        full_query = f"에이전트 컨텍스트:\n{agent['context']}\n\n대화 내용: {' '.join(self.conversation_history)}\n\n당신은 {next_speaker}입니다. 다음 발언:"
                         result = agent['chain'].invoke(
                             {"input": full_query},
                             {"callbacks": [st_cb]}
                         )
                         response = result["response"]
+                        self.conversation_history.append(f"{next_speaker}: {response}")
                         st.session_state.messages.append({"role": "assistant", "content": f"{next_speaker}: {response}"})
-                        self.log_conversation(f"{next_speaker}: {response}")
                         logger.info(f"{next_speaker} 응답: {response}")
+                        
+                        # 프롬프트와 응답 로깅
+                        self.log_interaction(next_speaker, full_query, response)
                         
                         self.baton -= 1
                         logger.info(f"바톤 카운트 감소: {self.baton}")
-                        conversation_history += f"\n{next_speaker}: {response}"
                     
                     except Exception as e:
                         error_msg = f"응답 생성 중 오류 발생: {str(e)}"
