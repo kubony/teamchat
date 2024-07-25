@@ -10,7 +10,6 @@ from langchain.schema import HumanMessage, SystemMessage
 from loguru import logger
 from config.settings import settings
 import random
-from collections import deque
 from anthropic import Anthropic
 
 st.set_page_config(page_title="다중 AI 에이전트 채팅", page_icon="💬")
@@ -23,7 +22,7 @@ class MultiAgentChat:
         self.agents = self.setup_agents()
         self.moderator = self.setup_moderator()
         self.baton = 0
-        self.conversation_history = deque(maxlen=settings.MAX_CONVERSATION_HISTORY)
+        self.conversation_history = []
         self.log_file = 'agent_interactions.jsonl'
 
     def setup_agents(self):
@@ -61,13 +60,14 @@ class MultiAgentChat:
     
     def get_next_speaker(self):
         agent_names = [name for name in settings.AGENTS.keys() if name != "moderator"]
-        moderator_input = f"대화 내용: {' '.join(self.conversation_history)}\n\n다음 발언자를 {', '.join(agent_names)} 중에서 선택하세요. 선택한 역할의 이름만 답변으로 제시하세요."
+        moderator_input = f"대화 내용: {self.get_conversation_history_string()}\n\n다음 발언자를 {', '.join(agent_names)} 중에서 선택하세요. 선택한 역할의 이름만 답변으로 제시하세요."
         response = self.moderator.invoke({"input": moderator_input})
         next_speaker = response['response'].strip().lower()
         
-        if next_speaker not in agent_names:
-            logger.warning(f"Invalid speaker selected: {next_speaker}. Defaulting to {agent_names[0]}.")
-            return agent_names[0]
+        if next_speaker not in agent_names or next_speaker == self.conversation_history[-1].split(':')[0]:
+            logger.warning(f"Invalid speaker selected: {next_speaker}. Selecting randomly from others.")
+            available_speakers = [name for name in agent_names if name != self.conversation_history[-1].split(':')[0]]
+            return random.choice(available_speakers)
         
         return next_speaker
     
@@ -85,7 +85,7 @@ class MultiAgentChat:
         self.conversation_history.append(message)
     
     def get_conversation_history_string(self):
-        return ' '.join(self.conversation_history)
+        return "\n".join(self.conversation_history[-10:])  # 최근 10개의 메시지만 포함
     
     @utils.enable_chat_history
     def main(self):
@@ -94,7 +94,7 @@ class MultiAgentChat:
         if user_query:
             self.add_to_conversation_history(f"User: {user_query}")
             utils.display_msg(user_query, 'user')
-            self.baton = 3
+            self.baton = 1
             logger.info(f"대화 시작: 바톤 카운트 {self.baton}", extra={"action": "start_conversation"})
             
             while self.baton > 0:
@@ -104,7 +104,9 @@ class MultiAgentChat:
                     st_cb = StreamHandler(st.empty())
                     try:
                         agent = self.agents[next_speaker]
-                        full_query = f"역할 컨텍스트:\n{agent['context']}\n\n대화 내용: {self.get_conversation_history_string()}\n\n당신은 {next_speaker} 역할입니다. 다음 발언:"
+                        full_query = f"""역할 컨텍스트:\n{agent['context']}\n\n
+    대화 내용:\n{self.get_conversation_history_string()}\n\n
+    당신은 {next_speaker} 역할입니다. 위의 대화 내용을 모두 고려하여 다음 발언을 해주세요. 다른 에이전트들의 의견도 고려하세요:"""
                         
                         if isinstance(agent['chain'], Anthropic):
                             # Claude 모델 사용
@@ -122,6 +124,7 @@ class MultiAgentChat:
                                 ]
                             )
                             response = message.content[0].text if isinstance(message.content, list) else message.content
+                            st_cb.on_llm_new_token(response)
                         else:
                             # 다른 모델 사용
                             logger.debug("Using other model for agent: %s", next_speaker)
@@ -131,10 +134,8 @@ class MultiAgentChat:
                             )
                             response = result["response"]
 
-                        # response를 문자열로 변환
                         response_str = str(response)
                         
-                        # 응답을 Streamlit 웹페이지에 직접 표시
                         st.markdown(f"**{next_speaker}**: {response_str}")
                         
                         self.add_to_conversation_history(f"{next_speaker}: {response_str}")

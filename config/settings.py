@@ -18,7 +18,7 @@ class Settings(BaseSettings):
         },
         "head_of_product": {
             "role": "제품 전략을 수립하고 전체적인 제품 방향을 결정합니다.",
-            "model": "gpt-4o"
+            "model": "gpt-4o-mini"
         },
         "frontend_developer": {
             "role": "사용자 인터페이스와 사용자 경험을 개발합니다.",
@@ -26,7 +26,8 @@ class Settings(BaseSettings):
         },
         "api_developer": {
             "role": "백엔드 API를 설계하고 구현합니다.",
-            "model": "claude-3-5-sonnet-20240620"
+            # "model": "claude-3-5-sonnet-20240620"
+            "model": "gpt-4o-mini"
         }
     }
     
