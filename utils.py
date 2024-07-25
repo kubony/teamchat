@@ -1,3 +1,4 @@
+# utils.py
 import os
 import openai
 import streamlit as st
@@ -6,6 +7,8 @@ from loguru import logger
 from config.settings import settings
 from langchain_openai import ChatOpenAI
 from langchain_community.chat_models import ChatOllama
+import anthropic
+from anthropic import Anthropic
 
 def setup_logging():
     logger.add("logs/app.log", rotation="500 MB", level="INFO")
@@ -81,11 +84,14 @@ def sync_st_session():
         st.session_state[k] = v
 
 def configure_llm_with_model(model_name):
-    if model_name.startswith('gpt-'):
+    if model_name.startswith('claude-'):
+        client = Anthropic(api_key=settings.ANTHROPIC_API_KEY.get_secret_value())
+        return client
+    elif model_name.startswith('gpt-'):
         return ChatOpenAI(model_name=model_name, temperature=0, streaming=True, api_key=settings.OPENAI_API_KEY.get_secret_value())
     else:
         return ChatOllama(model=model_name, base_url=settings.OLLAMA_ENDPOINT)
-
+    
 def truncate_string(s, max_length=100):
     return s if len(s) <= max_length else s[:max_length] + '...'
 

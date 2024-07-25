@@ -6,10 +6,12 @@ import streamlit as st
 from streaming import StreamHandler
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
+from langchain.schema import HumanMessage, SystemMessage
 from loguru import logger
 from config.settings import settings
 import random
 from collections import deque
+from anthropic import Anthropic
 
 st.set_page_config(page_title="다중 AI 에이전트 채팅", page_icon="💬")
 st.header('다중 AI 에이전트 채팅')
@@ -43,10 +45,13 @@ class MultiAgentChat:
         return context
 
     def setup_chain(self, model):
-        llm = utils.configure_llm_with_model(model)
-        memory = ConversationBufferMemory(max_token_limit=1000)
-        chain = ConversationChain(llm=llm, memory=memory, verbose=False)
-        return chain
+        if model.startswith('claude-'):
+            return Anthropic(api_key=settings.ANTHROPIC_API_KEY.get_secret_value())
+        else:
+            llm = utils.configure_llm_with_model(model)
+            memory = ConversationBufferMemory(max_token_limit=1000)
+            chain = ConversationChain(llm=llm, memory=memory, verbose=False)
+            return chain
 
     def setup_moderator(self):
         moderator_info = settings.AGENTS["moderator"]
@@ -70,7 +75,7 @@ class MultiAgentChat:
         log_entry = {
             "role": role,
             "prompt": prompt,
-            "response": response
+            "response": str(response)  # 문자열로 변환
         }
         with open(self.log_file, 'a', encoding='utf-8') as f:
             json.dump(log_entry, f, ensure_ascii=False)
@@ -100,11 +105,35 @@ class MultiAgentChat:
                     try:
                         agent = self.agents[next_speaker]
                         full_query = f"역할 컨텍스트:\n{agent['context']}\n\n대화 내용: {self.get_conversation_history_string()}\n\n당신은 {next_speaker} 역할입니다. 다음 발언:"
-                        result = agent['chain'].invoke(
-                            {"input": full_query},
-                            {"callbacks": [st_cb]}
-                        )
-                        response = result["response"]
+                        
+                        if isinstance(agent['chain'], Anthropic):
+                            # Claude 모델 사용
+                            logger.debug("Using Anthropic API for agent: %s", next_speaker)
+                            message = agent['chain'].messages.create(
+                                model="claude-3-5-sonnet-20240620",
+                                max_tokens=1000,
+                                temperature=0,
+                                system=agent['context'],
+                                messages=[
+                                    {
+                                        "role": "user",
+                                        "content": full_query
+                                    }
+                                ]
+                            )
+                            response = message.content[0].text if isinstance(message.content, list) else message.content
+                        else:
+                            # 다른 모델 사용
+                            logger.debug("Using other model for agent: %s", next_speaker)
+                            result = agent['chain'].invoke(
+                                {"input": full_query},
+                                {"callbacks": [st_cb]}
+                            )
+                            response = result["response"]
+
+                        # response를 문자열로 변환
+                        response_str = str(response)
+                        
                         self.add_to_conversation_history(f"{next_speaker}: {response}")
                         st.session_state.messages.append({"role": "assistant", "content": f"{next_speaker}: {response}"})
                         logger.info(f"{next_speaker} 응답: {utils.truncate_string(response)}", extra={"action": "agent_response", "agent": next_speaker})
@@ -122,7 +151,7 @@ class MultiAgentChat:
                         break
             
             logger.info(f"대화 종료: 바톤 카운트 {self.baton}", extra={"action": "end_conversation"})
-            
+
 if __name__ == "__main__":
     obj = MultiAgentChat()
     obj.main()

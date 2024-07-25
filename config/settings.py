@@ -5,6 +5,8 @@ from typing import Dict
 
 class Settings(BaseSettings):
     OPENAI_API_KEY: SecretStr
+    ANTHROPIC_API_KEY: SecretStr
+
     OLLAMA_ENDPOINT: str = "http://localhost:11434"
     DEFAULT_MODEL: str = "gpt-4o-mini"
     MAX_CONVERSATION_HISTORY: int = 10
@@ -24,7 +26,7 @@ class Settings(BaseSettings):
         },
         "api_developer": {
             "role": "백엔드 API를 설계하고 구현합니다.",
-            "model": "gpt-4o-mini"
+            "model": "claude-3-5-sonnet-20240620"
         }
     }
     
