@@ -79,3 +79,9 @@ def configure_llm():
 def sync_st_session():
     for k, v in st.session_state.items():
         st.session_state[k] = v
+
+def configure_llm_with_model(model_name):
+    if model_name.startswith('gpt-'):
+        return ChatOpenAI(model_name=model_name, temperature=0, streaming=True, api_key=settings.OPENAI_API_KEY.get_secret_value())
+    else:
+        return ChatOllama(model=model_name, base_url=settings.OLLAMA_ENDPOINT)
