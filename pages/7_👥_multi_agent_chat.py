@@ -19,6 +19,7 @@ st.write('여러 AI 에이전트가 참여하는 단체 채팅방입니다.')
 class MultiAgentChat:
     def __init__(self):
         utils.sync_st_session()
+        self.agents = {}  # 여기서 self.agents를 초기화합니다.
         self.agents = self.setup_agents()
         self.moderator = self.setup_moderator()
         self.baton = 0
@@ -31,7 +32,8 @@ class MultiAgentChat:
             if agent_name != "moderator":
                 agents[agent_name] = {
                     'context': self.load_role_context(agent_name, agent_info['role']),
-                    'chain': self.setup_chain(agent_info['model'])
+                    'memory': ConversationBufferMemory(max_token_limit=2000),
+                    'chain': self.setup_chain(agent_info['model'], agent_name)
                 }
         return agents
     
@@ -43,19 +45,19 @@ class MultiAgentChat:
                 context += file.read()
         return context
 
-    def setup_chain(self, model):
+    def setup_chain(self, model, agent_name):
         if model.startswith('claude-'):
             return Anthropic(api_key=settings.ANTHROPIC_API_KEY.get_secret_value())
         else:
             llm = utils.configure_llm_with_model(model)
-            memory = ConversationBufferMemory(max_token_limit=1000)
+            memory = ConversationBufferMemory(max_token_limit=2000)
             chain = ConversationChain(llm=llm, memory=memory, verbose=False)
             return chain
 
     def setup_moderator(self):
         moderator_info = settings.AGENTS["moderator"]
         llm = utils.configure_llm_with_model(moderator_info['model'])
-        memory = ConversationBufferMemory(max_token_limit=1000)
+        memory = ConversationBufferMemory(max_token_limit=2000)
         return ConversationChain(llm=llm, memory=memory, verbose=False)
     
     def get_next_speaker(self):
@@ -83,10 +85,13 @@ class MultiAgentChat:
 
     def add_to_conversation_history(self, message):
         self.conversation_history.append(message)
-    
+        # 모든 에이전트의 메모리에 메시지 추가
+        for agent in self.agents.values():
+            agent['memory'].chat_memory.add_user_message(message)
+
     def get_conversation_history_string(self):
         return "\n".join(self.conversation_history[-10:])  # 최근 10개의 메시지만 포함
-    
+
     @utils.enable_chat_history
     def main(self):
         user_query = st.chat_input(placeholder="대화를 시작하세요!")
@@ -104,9 +109,10 @@ class MultiAgentChat:
                     st_cb = StreamHandler(st.empty())
                     try:
                         agent = self.agents[next_speaker]
+                        conversation_history = self.get_conversation_history_string()
                         full_query = f"""역할 컨텍스트:\n{agent['context']}\n\n
-    대화 내용:\n{self.get_conversation_history_string()}\n\n
-    당신은 {next_speaker} 역할입니다. 위의 대화 내용을 모두 고려하여 다음 발언을 해주세요. 다른 에이전트들의 의견도 고려하세요:"""
+대화 내용:\n{conversation_history}\n\n
+당신은 {next_speaker} 역할입니다. 위의 대화 내용을 모두 고려하여 다음 발언을 해주세요. 다른 에이전트들의 의견도 고려하세요:"""
                         
                         if isinstance(agent['chain'], Anthropic):
                             # Claude 모델 사용
@@ -117,10 +123,8 @@ class MultiAgentChat:
                                 temperature=0,
                                 system=agent['context'],
                                 messages=[
-                                    {
-                                        "role": "user",
-                                        "content": full_query
-                                    }
+                                    {"role": "user", "content": conversation_history},
+                                    {"role": "user", "content": full_query}
                                 ]
                             )
                             response = message.content[0].text if isinstance(message.content, list) else message.content
