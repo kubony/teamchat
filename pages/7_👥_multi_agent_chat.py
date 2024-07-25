@@ -45,14 +45,14 @@ class MultiAgentChat:
     def setup_chain(self, model):
         llm = utils.configure_llm_with_model(model)
         memory = ConversationBufferMemory(max_token_limit=1000)
-        chain = ConversationChain(llm=llm, memory=memory, verbose=True)
+        chain = ConversationChain(llm=llm, memory=memory, verbose=False)
         return chain
 
     def setup_moderator(self):
         moderator_info = settings.AGENTS["moderator"]
         llm = utils.configure_llm_with_model(moderator_info['model'])
         memory = ConversationBufferMemory(max_token_limit=1000)
-        return ConversationChain(llm=llm, memory=memory, verbose=True)
+        return ConversationChain(llm=llm, memory=memory, verbose=False)
     
     def get_next_speaker(self):
         agent_names = [name for name in settings.AGENTS.keys() if name != "moderator"]
@@ -107,9 +107,9 @@ class MultiAgentChat:
                         response = result["response"]
                         self.add_to_conversation_history(f"{next_speaker}: {response}")
                         st.session_state.messages.append({"role": "assistant", "content": f"{next_speaker}: {response}"})
-                        logger.info(f"{next_speaker} 응답: {response}", extra={"action": "agent_response", "agent": next_speaker})
+                        logger.info(f"{next_speaker} 응답: {utils.truncate_string(response)}", extra={"action": "agent_response", "agent": next_speaker})
                         
-                        self.log_interaction(next_speaker, full_query, response)
+                        self.log_interaction(next_speaker, utils.truncate_string(full_query), utils.truncate_string(response))
                         
                         self.baton -= 1
                         logger.info(f"바톤 카운트 감소: {self.baton}", extra={"action": "decrease_baton"})
@@ -122,7 +122,7 @@ class MultiAgentChat:
                         break
             
             logger.info(f"대화 종료: 바톤 카운트 {self.baton}", extra={"action": "end_conversation"})
-
+            
 if __name__ == "__main__":
     obj = MultiAgentChat()
     obj.main()
