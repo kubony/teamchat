@@ -1,4 +1,6 @@
+# pages/7_👥_multi_agent_chat.py
 import os
+import json
 import utils
 import streamlit as st
 from streaming import StreamHandler
@@ -7,7 +9,6 @@ from langchain.memory import ConversationBufferMemory
 from loguru import logger
 from config.settings import settings
 import random
-import json
 
 st.set_page_config(page_title="다중 AI 에이전트 채팅", page_icon="💬")
 st.header('다중 AI 에이전트 채팅')
@@ -17,30 +18,32 @@ class MultiAgentChat:
     def __init__(self):
         utils.sync_st_session()
         self.llm = utils.configure_llm()
+        self.roles = self.load_roles()
         self.agents = self.setup_agents()
         self.moderator = self.setup_moderator()
         self.baton = 0
         self.conversation_history = []
         self.log_file = 'agent_interactions.jsonl'
+    
+    def load_roles(self):
+        with open('roles.json', 'r') as f:
+            return json.load(f)
         
     def setup_agents(self):
         agents = {}
-        agent_folders = ['agent1', 'agent2', 'agent3']
-        for folder in agent_folders:
-            agents[folder] = {
-                'context': self.load_agent_context(folder),
+        for role in self.roles:
+            agents[role] = {
+                'context': self.load_role_context(role),
                 'chain': self.setup_chain()
             }
         return agents
     
-    def load_agent_context(self, folder):
-        context = ""
-        path = os.path.join(os.getcwd(), folder)
+    def load_role_context(self, role):
+        context = f"당신의 역할은 {role}입니다. {self.roles[role]}\n\n"
+        path = os.path.join(os.getcwd(), 'role_contexts', f"{role}.md")
         if os.path.exists(path):
-            for filename in os.listdir(path):
-                if filename.endswith('.md'):
-                    with open(os.path.join(path, filename), 'r', encoding='utf-8') as file:
-                        context += f"\n\n{filename}:\n{file.read()}"
+            with open(path, 'r', encoding='utf-8') as file:
+                context += file.read()
         return context
     
     def setup_chain(self):
@@ -54,19 +57,19 @@ class MultiAgentChat:
         return ConversationChain(llm=self.llm, memory=memory, verbose=True)
     
     def get_next_speaker(self):
-        moderator_input = f"대화 내용: {' '.join(self.conversation_history)}\n\n다음 발언자를 'agent1', 'agent2', 또는 'agent3' 중에서 선택하세요. 선택한 에이전트의 이름만 답변으로 제시하세요."
+        moderator_input = f"대화 내용: {' '.join(self.conversation_history)}\n\n다음 발언자를 {', '.join(self.roles.keys())} 중에서 선택하세요. 선택한 역할의 이름만 답변으로 제시하세요."
         response = self.moderator.invoke({"input": moderator_input})
         next_speaker = response['response'].strip().lower()
         
-        if next_speaker not in ['agent1', 'agent2', 'agent3']:
-            logger.warning(f"Invalid speaker selected: {next_speaker}. Defaulting to agent1.")
-            return 'agent1'
+        if next_speaker not in self.roles:
+            logger.warning(f"Invalid speaker selected: {next_speaker}. Defaulting to {list(self.roles.keys())[0]}.")
+            return list(self.roles.keys())[0]
         
         return next_speaker
     
-    def log_interaction(self, agent, prompt, response):
+    def log_interaction(self, role, prompt, response):
         log_entry = {
-            "agent": agent,
+            "role": role,
             "prompt": prompt,
             "response": response
         }
@@ -91,7 +94,7 @@ class MultiAgentChat:
                     st_cb = StreamHandler(st.empty())
                     try:
                         agent = self.agents[next_speaker]
-                        full_query = f"에이전트 컨텍스트:\n{agent['context']}\n\n대화 내용: {' '.join(self.conversation_history)}\n\n당신은 {next_speaker}입니다. 다음 발언:"
+                        full_query = f"역할 컨텍스트:\n{agent['context']}\n\n대화 내용: {' '.join(self.conversation_history)}\n\n당신은 {next_speaker} 역할입니다. 다음 발언:"
                         result = agent['chain'].invoke(
                             {"input": full_query},
                             {"callbacks": [st_cb]}
@@ -101,7 +104,6 @@ class MultiAgentChat:
                         st.session_state.messages.append({"role": "assistant", "content": f"{next_speaker}: {response}"})
                         logger.info(f"{next_speaker} 응답: {response}")
                         
-                        # 프롬프트와 응답 로깅
                         self.log_interaction(next_speaker, full_query, response)
                         
                         self.baton -= 1
