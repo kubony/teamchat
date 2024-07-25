@@ -134,11 +134,13 @@ class MultiAgentChat:
                         # response를 문자열로 변환
                         response_str = str(response)
                         
-                        self.add_to_conversation_history(f"{next_speaker}: {response}")
-                        st.session_state.messages.append({"role": "assistant", "content": f"{next_speaker}: {response}"})
-                        logger.info(f"{next_speaker} 응답: {utils.truncate_string(response)}", extra={"action": "agent_response", "agent": next_speaker})
+                        # 응답을 Streamlit 웹페이지에 직접 표시
+                        st.markdown(f"**{next_speaker}**: {response_str}")
                         
-                        self.log_interaction(next_speaker, utils.truncate_string(full_query), utils.truncate_string(response))
+                        self.add_to_conversation_history(f"{next_speaker}: {response_str}")
+                        logger.info(f"{next_speaker} 응답: {utils.truncate_string(response_str)}", extra={"action": "agent_response", "agent": next_speaker})
+                        
+                        self.log_interaction(next_speaker, utils.truncate_string(full_query), utils.truncate_string(response_str))
                         
                         self.baton -= 1
                         logger.info(f"바톤 카운트 감소: {self.baton}", extra={"action": "decrease_baton"})
@@ -151,7 +153,7 @@ class MultiAgentChat:
                         break
             
             logger.info(f"대화 종료: 바톤 카운트 {self.baton}", extra={"action": "end_conversation"})
-
+            
 if __name__ == "__main__":
     obj = MultiAgentChat()
     obj.main()
