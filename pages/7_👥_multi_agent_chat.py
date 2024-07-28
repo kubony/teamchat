@@ -69,7 +69,7 @@ class MultiAgentChat:
         llm = utils.configure_llm_with_model(moderator_info['model'])
         prompt = PromptTemplate(
             input_variables=["history", "agents", "human_input"],
-            template="대화 내용: {history}\n\n다음 발언자를 {agents} 중에서 선택하고, 대화를 계속할 바톤 수(1-5)를 결정해주세요. 형식: '발언자:바톤수'\n\n사용자 입력: {human_input}"
+            template="대화 내용: {history}\n\n다음 발언자를 {agents} 중에서 선택하고, 대화를 계속할 바톤 수(1-2)를 결정해주세요. 형식: '발언자:바톤수'\n\n사용자 입력: {human_input}"
         )
         return LLMChain(llm=llm, prompt=prompt, memory=self.shared_memory, verbose=False)
   
@@ -78,7 +78,7 @@ class MultiAgentChat:
         response = self.moderator.predict(
             history=self.get_conversation_history_string(),
             agents=', '.join(agent_names),
-            human_input="다음 발언자를 선택하고, 대화를 계속할 바톤 수(1-5)를 결정해주세요. 형식: '발언자:바톤수'"
+            human_input="다음 발언자를 선택하고, 대화를 계속할 바톤 수(1-2)를 결정해주세요. 형식: '발언자:바톤수'"
         )
         response = response.strip().lower()
         
