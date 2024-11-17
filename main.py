@@ -9,7 +9,7 @@ st.set_page_config(
 
 logger.info("메인 페이지 로드됨")
 
-st.header("Langchain을 활용한 챗봇 구현")
+st.header("편한 주문 서비스 Holtz")
 
 st.write("""
 안녕하세요!
