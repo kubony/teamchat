@@ -7,9 +7,9 @@ from langchain.memory import ConversationBufferMemory
 from loguru import logger
 from config.settings import settings
 
-st.set_page_config(page_title="프로젝트 컨텍스트 챗봇", page_icon="📚")
-st.header('프로젝트 컨텍스트 챗봇')
-st.write('프로젝트 관련 문서를 기반으로 대화하는 챗봇입니다.')
+st.set_page_config(page_title="더치앤빈 서울창업허브점 챗봇", page_icon="📚")
+st.header('더치앤빈 서울창업허브점 챗봇')
+st.write('메뉴 정보를 기반으로 대화하는 챗봇입니다.')
 
 class ProjectContextChatbot:
     def __init__(self):
