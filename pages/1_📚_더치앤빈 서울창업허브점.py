@@ -19,16 +19,14 @@ class ProjectContextChatbot:
         self.chain = self.setup_chain()
     
     def load_project_context(self):
-        context = ""
-        directories = ['jobdescription', 'progress', 'todo', 'retrospective']
-        for directory in directories:
-            path = os.path.join(os.getcwd(), directory)
-            if os.path.exists(path):
-                for filename in os.listdir(path):
-                    if filename.endswith('.md'):
-                        with open(os.path.join(path, filename), 'r', encoding='utf-8') as file:
-                            context += f"\n\n{filename}:\n{file.read()}"
-        return context
+        try:
+            file_path = os.path.join("store_infos", "더치앤빈 서울창업허브점.md")
+            with open(file_path, 'r', encoding='utf-8') as file:
+                context = file.read()
+            return context
+        except Exception as e:
+            logger.error(f"프로젝트 컨텍스트 로드 중 오류 발생: {str(e)}")
+            return "컨텍스트를 불러오는데 실패했습니다."
 
     def setup_chain(self):
         memory = ConversationBufferMemory()
@@ -45,7 +43,7 @@ class ProjectContextChatbot:
         with st.expander("프로젝트 컨텍스트 정보", expanded=False):
             st.text(self.context)
 
-        user_query = st.chat_input(placeholder="프로젝트에 대해 무엇이든 물어보세요!")
+        user_query = st.chat_input(placeholder="더치앤빈 서울창업허브점입니다! 주문하시겠어요?")
         
         if user_query:
             utils.display_msg(user_query, 'user')
